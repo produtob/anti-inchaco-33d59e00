@@ -14,7 +14,7 @@ import illus1 from "@/assets/illus-1.png.asset.json";
 import illus2 from "@/assets/illus-2.png.asset.json";
 import illus3 from "@/assets/illus-3.png.asset.json";
 import illus4 from "@/assets/illus-4.png.asset.json";
-import censored from "@/assets/censored.png.asset.json";
+import { trackEvent } from "@/lib/meta-pixel";
 
 const CHECKOUT_URL = "#oferta";
 
@@ -66,10 +66,15 @@ function Pill({ children, tone = "primary" }: { children: React.ReactNode; tone?
 }
 
 function CTA({ children, href = CHECKOUT_URL, pulse = true, sub }: { children: React.ReactNode; href?: string; pulse?: boolean; sub?: string }) {
+  const handleClick = () => {
+    trackEvent("AddToCart", { content_name: "Método Anti-Inchaço Feminino", currency: "BRL", value: 39.90 });
+    trackEvent("InitiateCheckout", { content_name: "Método Anti-Inchaço Feminino", currency: "BRL", value: 39.90, num_items: 1 });
+  };
   return (
     <div className="flex w-full flex-col items-center">
       <a
         href={href}
+        onClick={handleClick}
         className={`group relative flex w-full max-w-md items-center justify-center gap-2 rounded-2xl bg-[var(--success)] px-6 py-4 text-center text-base font-bold text-white shadow-[var(--shadow-premium)] transition-transform active:scale-[0.98] sm:py-5 sm:text-lg ${pulse ? "cta-pulse" : ""}`}
       >
         <span className="leading-tight">{children}</span>
@@ -235,6 +240,16 @@ function FAQItem({ q, a }: { q: string; a: string }) {
 /* ---------- Page ---------- */
 
 function LandingPage() {
+  useEffect(() => {
+    trackEvent("ViewContent", {
+      content_name: "Método Anti-Inchaço Feminino",
+      content_category: "Ebook / Programa",
+      content_ids: ["metodo-anti-inchaco-feminino"],
+      content_type: "product",
+      currency: "BRL",
+      value: 39.90,
+    });
+  }, []);
   return (
     <div className="min-h-screen overflow-x-hidden bg-background pb-24 text-foreground">
       {/* Top trust bar */}
@@ -426,18 +441,6 @@ function LandingPage() {
         <div className="mt-6 overflow-hidden rounded-3xl bg-card shadow-[var(--shadow-premium)] ring-1 ring-border">
           <div className="relative">
             <img src={bodyTransform.url} alt="Transformação corporal" className="w-full" loading="lazy" />
-            <img
-              src={censored.url}
-              alt=""
-              aria-hidden
-              className="pointer-events-none absolute left-1/2 top-[42%] w-[55%] -translate-x-1/2 -rotate-6 select-none opacity-90"
-            />
-            <img
-              src={censored.url}
-              alt=""
-              aria-hidden
-              className="pointer-events-none absolute left-1/2 top-[70%] w-[55%] -translate-x-1/2 rotate-3 select-none opacity-90"
-            />
           </div>
           <div className="grid grid-cols-2 border-t border-border text-center text-xs font-semibold uppercase tracking-wider text-muted-foreground">
             <div className="border-r border-border py-2">Antes</div>
