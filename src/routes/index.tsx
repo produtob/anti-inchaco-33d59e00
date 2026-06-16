@@ -139,6 +139,9 @@ function VSLPlayer() {
             loop
             muted
             preload="metadata"
+            width={1920}
+            height={1080}
+            fetchPriority="high"
             className="absolute inset-0 h-full w-full object-cover"
             onClick={() => muted && unmute()}
           />
@@ -548,7 +551,7 @@ function LandingPage() {
               <div className="relative mx-auto w-full max-w-[240px]">
                 <div className="absolute -inset-4 rounded-[2rem] bg-gradient-to-br from-[var(--gold-soft)] via-transparent to-[var(--primary-soft)] blur-2xl" />
                 <div className="relative rotate-[-3deg] overflow-hidden rounded-2xl shadow-[var(--shadow-premium)] ring-1 ring-black/10 transition-transform hover:rotate-0">
-                  <img src={ebookCover.url} alt="Capa do Método Anti-Inchaço Feminino" className="block w-full" />
+                  <img src={ebookCover.url} alt="Capa do Método Anti-Inchaço Feminino" className="block w-full" width={1054} height={1492} />
                 </div>
               </div>
 
