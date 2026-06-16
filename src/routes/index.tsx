@@ -16,7 +16,7 @@ import illus3 from "@/assets/illus-3.png.asset.json";
 import illus4 from "@/assets/illus-4.png.asset.json";
 import { trackEvent } from "@/lib/meta-pixel";
 
-const CHECKOUT_URL = "#oferta";
+const CHECKOUT_URL = "https://pay.cakto.com.br/3a9ynm4_396700";
 
 export const Route = createFileRoute("/")({
   head: () => ({
