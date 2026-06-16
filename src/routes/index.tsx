@@ -240,6 +240,16 @@ function FAQItem({ q, a }: { q: string; a: string }) {
 /* ---------- Page ---------- */
 
 function LandingPage() {
+  useEffect(() => {
+    trackEvent("ViewContent", {
+      content_name: "Método Anti-Inchaço Feminino",
+      content_category: "Ebook / Programa",
+      content_ids: ["metodo-anti-inchaco-feminino"],
+      content_type: "product",
+      currency: "BRL",
+      value: 39.90,
+    });
+  }, []);
   return (
     <div className="min-h-screen overflow-x-hidden bg-background pb-24 text-foreground">
       {/* Top trust bar */}
