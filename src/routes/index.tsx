@@ -66,10 +66,15 @@ function Pill({ children, tone = "primary" }: { children: React.ReactNode; tone?
 }
 
 function CTA({ children, href = CHECKOUT_URL, pulse = true, sub }: { children: React.ReactNode; href?: string; pulse?: boolean; sub?: string }) {
+  const handleClick = () => {
+    trackEvent("AddToCart", { content_name: "Método Anti-Inchaço Feminino", currency: "BRL", value: 39.90 });
+    trackEvent("InitiateCheckout", { content_name: "Método Anti-Inchaço Feminino", currency: "BRL", value: 39.90, num_items: 1 });
+  };
   return (
     <div className="flex w-full flex-col items-center">
       <a
         href={href}
+        onClick={handleClick}
         className={`group relative flex w-full max-w-md items-center justify-center gap-2 rounded-2xl bg-[var(--success)] px-6 py-4 text-center text-base font-bold text-white shadow-[var(--shadow-premium)] transition-transform active:scale-[0.98] sm:py-5 sm:text-lg ${pulse ? "cta-pulse" : ""}`}
       >
         <span className="leading-tight">{children}</span>
