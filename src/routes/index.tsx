@@ -648,6 +648,7 @@ function LandingPage() {
           </div>
         </div>
       </section>
+      </main>
 
       {/* FOOTER */}
       <footer className="mx-auto mt-16 max-w-3xl px-4 text-center">
