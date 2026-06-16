@@ -141,7 +141,7 @@ function VSLPlayer() {
             preload="metadata"
             width={1920}
             height={1080}
-            fetchPriority="high"
+            fetchpriority="high"
             className="absolute inset-0 h-full w-full object-cover"
             onClick={() => muted && unmute()}
           />
