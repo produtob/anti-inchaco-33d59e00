@@ -656,11 +656,11 @@ function LandingPage() {
           <Leaf className="h-4 w-4" />
           <span className="text-sm font-semibold">Método Anti-Inchaço Feminino</span>
         </div>
-        <p className="mt-3 text-[11px] leading-relaxed text-muted-foreground">
+        <p className="mt-3 text-xs leading-relaxed text-foreground/80">
           Este produto não substitui acompanhamento médico, nutricional ou tratamento profissional. Resultados podem variar de pessoa para pessoa.
           Em caso de gestação, doenças preexistentes ou uso contínuo de medicamentos, consulte seu médico antes de iniciar qualquer protocolo.
         </p>
-        <p className="mt-3 text-[11px] text-muted-foreground">© {new Date().getFullYear()} Método Anti-Inchaço Feminino. Todos os direitos reservados.</p>
+        <p className="mt-3 text-xs text-foreground/80">© {new Date().getFullYear()} Método Anti-Inchaço Feminino. Todos os direitos reservados.</p>
       </footer>
 
       <StickyCTA />
