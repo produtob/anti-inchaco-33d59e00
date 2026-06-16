@@ -262,6 +262,7 @@ function LandingPage() {
         </div>
       </div>
 
+      <main id="main">
       {/* HERO */}
       <header className="relative">
         <div className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(80%_50%_at_50%_0%,oklch(0.95_0.05_145)_0%,transparent_70%)]" />
@@ -647,6 +648,7 @@ function LandingPage() {
           </div>
         </div>
       </section>
+      </main>
 
       {/* FOOTER */}
       <footer className="mx-auto mt-16 max-w-3xl px-4 text-center">
@@ -654,11 +656,11 @@ function LandingPage() {
           <Leaf className="h-4 w-4" />
           <span className="text-sm font-semibold">Método Anti-Inchaço Feminino</span>
         </div>
-        <p className="mt-3 text-[11px] leading-relaxed text-muted-foreground">
+        <p className="mt-3 text-xs leading-relaxed text-foreground/80">
           Este produto não substitui acompanhamento médico, nutricional ou tratamento profissional. Resultados podem variar de pessoa para pessoa.
           Em caso de gestação, doenças preexistentes ou uso contínuo de medicamentos, consulte seu médico antes de iniciar qualquer protocolo.
         </p>
-        <p className="mt-3 text-[11px] text-muted-foreground">© {new Date().getFullYear()} Método Anti-Inchaço Feminino. Todos os direitos reservados.</p>
+        <p className="mt-3 text-xs text-foreground/80">© {new Date().getFullYear()} Método Anti-Inchaço Feminino. Todos os direitos reservados.</p>
       </footer>
 
       <StickyCTA />
