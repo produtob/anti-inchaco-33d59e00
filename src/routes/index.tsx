@@ -14,7 +14,7 @@ import illus1 from "@/assets/illus-1.png.asset.json";
 import illus2 from "@/assets/illus-2.png.asset.json";
 import illus3 from "@/assets/illus-3.png.asset.json";
 import illus4 from "@/assets/illus-4.png.asset.json";
-import censored from "@/assets/censored.png.asset.json";
+import { trackEvent } from "@/lib/meta-pixel";
 
 const CHECKOUT_URL = "#oferta";
 
@@ -426,18 +426,6 @@ function LandingPage() {
         <div className="mt-6 overflow-hidden rounded-3xl bg-card shadow-[var(--shadow-premium)] ring-1 ring-border">
           <div className="relative">
             <img src={bodyTransform.url} alt="Transformação corporal" className="w-full" loading="lazy" />
-            <img
-              src={censored.url}
-              alt=""
-              aria-hidden
-              className="pointer-events-none absolute left-1/2 top-[42%] w-[55%] -translate-x-1/2 -rotate-6 select-none opacity-90"
-            />
-            <img
-              src={censored.url}
-              alt=""
-              aria-hidden
-              className="pointer-events-none absolute left-1/2 top-[70%] w-[55%] -translate-x-1/2 rotate-3 select-none opacity-90"
-            />
           </div>
           <div className="grid grid-cols-2 border-t border-border text-center text-xs font-semibold uppercase tracking-wider text-muted-foreground">
             <div className="border-r border-border py-2">Antes</div>
