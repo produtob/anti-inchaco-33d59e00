@@ -262,6 +262,7 @@ function LandingPage() {
         </div>
       </div>
 
+      <main id="main">
       {/* HERO */}
       <header className="relative">
         <div className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(80%_50%_at_50%_0%,oklch(0.95_0.05_145)_0%,transparent_70%)]" />
