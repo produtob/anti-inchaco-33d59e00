@@ -256,9 +256,14 @@ function LandingPage() {
     <div className="min-h-screen overflow-x-hidden bg-background pb-24 text-foreground">
       {/* Top trust bar */}
       <div className="bg-[var(--primary-deep)] text-white">
-        <div className="mx-auto flex max-w-3xl items-center justify-center gap-2 px-4 py-2 text-[11px] font-medium tracking-wide sm:text-xs">
-          <Sparkles className="h-3.5 w-3.5 text-[var(--gold-soft)]" />
-          <span>+12.000 mulheres já transformaram a rotina com o método</span>
+        <div className="mx-auto flex max-w-3xl flex-wrap items-center justify-center gap-x-4 gap-y-1 px-4 py-2 text-[11px] font-medium tracking-wide sm:text-xs">
+          <span className="inline-flex items-center gap-1"><Star className="h-3.5 w-3.5 fill-[var(--gold)] text-[var(--gold)]" /> <strong>4,9/5</strong></span>
+          <span className="hidden h-3 w-px bg-white/30 sm:inline-block" />
+          <span className="inline-flex items-center gap-1"><Sparkles className="h-3.5 w-3.5 text-[var(--gold-soft)]" /> <strong>+12.000</strong> mulheres impactadas</span>
+          <span className="hidden h-3 w-px bg-white/30 sm:inline-block" />
+          <span className="inline-flex items-center gap-1"><ShieldCheck className="h-3.5 w-3.5 text-[var(--gold-soft)]" /> Garantia 7 dias</span>
+          <span className="hidden h-3 w-px bg-white/30 sm:inline-block" />
+          <span className="inline-flex items-center gap-1"><Clock className="h-3.5 w-3.5 text-[var(--gold-soft)]" /> Acesso imediato</span>
         </div>
       </div>
 
