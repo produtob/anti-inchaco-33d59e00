@@ -340,6 +340,19 @@ function LandingPage() {
         </div>
       </section>
 
+      {/* IDENTIFICAÇÃO */}
+      <section className="mx-auto mt-16 max-w-3xl px-4">
+        <div className="rounded-3xl bg-[var(--primary-soft)] p-6 text-center shadow-[var(--shadow-soft)] ring-1 ring-[color-mix(in_oklab,var(--primary)_18%,transparent)] sm:p-8">
+          <Pill><Heart className="h-3 w-3" /> Você não está sozinha</Pill>
+          <h2 className="mt-3 font-display text-2xl font-bold text-primary-deep sm:text-3xl">
+            Você não é a única que passa por isso.
+          </h2>
+          <p className="mx-auto mt-3 max-w-xl text-sm leading-relaxed text-foreground/80 sm:text-base">
+            Milhares de mulheres convivem diariamente com <strong className="text-foreground">barriga estufada, retenção de líquidos e desconforto</strong> sem entender a verdadeira causa — e sem nenhum método feminino real para corrigir.
+          </p>
+        </div>
+      </section>
+
       {/* MECANISMO */}
       <section className="mx-auto mt-20 max-w-3xl px-4">
         <div className="text-center">
@@ -404,6 +417,44 @@ function LandingPage() {
         </div>
       </section>
 
+      {/* DIFERENCIAL */}
+      <section className="mx-auto mt-20 max-w-3xl px-4">
+        <div className="text-center">
+          <Pill tone="gold"><Sparkles className="h-3 w-3" /> Mecanismo único</Pill>
+          <h2 className="mt-3 text-balance text-2xl font-bold text-primary-deep sm:text-4xl">Por que este método é diferente?</h2>
+          <p className="mx-auto mt-3 max-w-xl text-sm text-muted-foreground sm:text-base">
+            É um protocolo focado nos <strong className="text-foreground">3 fatores reais ligados ao inchaço feminino</strong>. Nada de promessa milagrosa.
+          </p>
+        </div>
+        <div className="mt-8 grid grid-cols-2 gap-3 sm:grid-cols-3">
+          {[
+            "Dieta extrema",
+            "Jejum radical",
+            "Chá milagroso",
+            "Remédio diurético",
+            "Solução temporária",
+            "Treino exaustivo",
+          ].map((n) => (
+            <div key={n} className="flex items-center gap-2 rounded-xl bg-card p-3 text-sm shadow-[var(--shadow-soft)] ring-1 ring-border">
+              <div className="grid h-6 w-6 shrink-0 place-items-center rounded-full bg-[oklch(0.96_0.04_30)] text-[var(--destructive)]">
+                <X className="h-3.5 w-3.5" />
+              </div>
+              <span className="font-medium text-foreground">Não é {n.toLowerCase()}</span>
+            </div>
+          ))}
+        </div>
+        <div className="mt-5 rounded-2xl bg-[var(--primary-deep)] p-5 text-center text-white shadow-[var(--shadow-premium)]">
+          <p className="text-sm leading-relaxed sm:text-base">
+            É um <strong className="text-[var(--gold-soft)]">protocolo guiado dia a dia</strong>, criado para o corpo feminino, que age na retenção, na inflamação e no intestino — os 3 fatores que realmente mantêm a barriga estufada.
+          </p>
+        </div>
+        <div className="mt-6 text-center">
+          <a href={CHECKOUT_URL} onClick={() => { trackEvent("AddToCart", { content_name: "Método Anti-Inchaço Feminino", currency: "BRL", value: 39.90 }); }} className="inline-flex items-center gap-1.5 text-sm font-bold text-[var(--success)] underline-offset-4 hover:underline">
+            👉 Quero aplicar o protocolo <ArrowRight className="h-4 w-4" />
+          </a>
+        </div>
+      </section>
+
       {/* BENEFÍCIOS */}
       <section className="mx-auto mt-16 max-w-3xl px-4">
         <div className="text-center">
@@ -428,6 +479,38 @@ function LandingPage() {
               <p className="text-sm font-medium text-foreground">{b}</p>
             </div>
           ))}
+        </div>
+      </section>
+
+      {/* IMAGINE */}
+      <section className="mx-auto mt-20 max-w-3xl px-4">
+        <div className="overflow-hidden rounded-3xl bg-gradient-to-br from-[var(--primary-soft)] via-card to-[oklch(0.97_0.04_85)] p-6 shadow-[var(--shadow-premium)] ring-1 ring-border sm:p-10">
+          <div className="text-center">
+            <Pill tone="gold"><Heart className="h-3 w-3" /> A sua nova rotina</Pill>
+            <h2 className="mt-3 font-display text-2xl font-bold text-primary-deep sm:text-4xl">
+              Imagine acordar e sentir…
+            </h2>
+          </div>
+          <ul className="mx-auto mt-6 max-w-xl space-y-2.5">
+            {[
+              "A barriga mais leve já ao se levantar",
+              "A roupa fechando sem aquele esforço de prender o ar",
+              "Menos desconforto e peso depois das refeições",
+              "Mais confiança para sair, marcar reunião, encontrar amigas",
+              "Mais segurança nas fotos — sem se esconder atrás de ninguém",
+              "Voltar a gostar do que vê quando passa em frente ao espelho",
+            ].map((b) => (
+              <li key={b} className="flex items-start gap-3 rounded-xl bg-card/70 p-3 backdrop-blur ring-1 ring-border">
+                <Sparkles className="mt-0.5 h-5 w-5 shrink-0 text-[var(--gold)]" />
+                <span className="text-sm font-medium text-foreground sm:text-base">{b}</span>
+              </li>
+            ))}
+          </ul>
+          <div className="mt-6 text-center">
+            <a href={CHECKOUT_URL} onClick={() => { trackEvent("AddToCart", { content_name: "Método Anti-Inchaço Feminino", currency: "BRL", value: 39.90 }); }} className="inline-flex items-center gap-1.5 text-sm font-bold text-[var(--success)] underline-offset-4 hover:underline">
+              👉 Quero sentir essa diferença <ArrowRight className="h-4 w-4" />
+            </a>
+          </div>
         </div>
       </section>
 
@@ -539,6 +622,31 @@ function LandingPage() {
         </div>
         <div className="mt-6 rounded-2xl bg-[var(--primary-soft)] p-4 text-center text-sm font-medium text-primary-deep ring-1 ring-[color-mix(in_oklab,var(--primary)_25%,transparent)]">
           O Método Anti-Inchaço Feminino corrige os 3 erros com um protocolo guiado, dia a dia.
+        </div>
+      </section>
+
+      {/* PARA QUEM */}
+      <section className="mx-auto mt-20 max-w-3xl px-4">
+        <div className="text-center">
+          <Pill>Indicado para</Pill>
+          <h2 className="mt-3 text-2xl font-bold text-primary-deep sm:text-4xl">Para quem este método foi criado?</h2>
+        </div>
+        <div className="mt-8 grid grid-cols-1 gap-3 sm:grid-cols-2">
+          {[
+            "Mulheres acima dos 35 anos",
+            "Mulheres que acordam bem e terminam o dia inchadas",
+            "Mulheres com retenção de líquidos constante",
+            "Mulheres que já tentaram dietas e não obtiveram resultado",
+            "Mulheres que querem voltar a vestir suas roupas favoritas",
+            "Mulheres que querem se sentir leves e confiantes de novo",
+          ].map((b) => (
+            <div key={b} className="flex items-start gap-3 rounded-xl bg-card p-3 shadow-[var(--shadow-soft)] ring-1 ring-border">
+              <div className="mt-0.5 grid h-6 w-6 shrink-0 place-items-center rounded-full bg-[var(--success)] text-white">
+                <Check className="h-4 w-4" />
+              </div>
+              <p className="text-sm font-medium text-foreground">{b}</p>
+            </div>
+          ))}
         </div>
       </section>
 
