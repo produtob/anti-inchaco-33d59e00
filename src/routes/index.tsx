@@ -699,7 +699,11 @@ function LandingPage() {
 
             {/* Price block */}
             <div className="border-t border-border bg-[var(--primary-deep)] px-5 py-6 text-center text-white sm:px-8">
-              <p className="text-xs uppercase tracking-widest opacity-80">Valor total</p>
+              <p className="mx-auto max-w-md text-sm font-display italic leading-snug text-[var(--gold-soft)] sm:text-base">
+                Quanto vale voltar a se sentir bem com o seu próprio corpo?
+              </p>
+              <div className="mx-auto mt-4 h-px w-16 bg-white/20" />
+              <p className="mt-4 text-xs uppercase tracking-widest opacity-80">Valor total dos materiais</p>
               <p className="mt-1 text-lg font-medium line-through opacity-70">R$ 322,00</p>
               <p className="mt-2 text-xs font-semibold uppercase tracking-widest text-[var(--gold-soft)]">Hoje, por apenas</p>
               <div className="mt-1 flex items-end justify-center gap-2">
@@ -707,9 +711,17 @@ function LandingPage() {
                 <span className="font-display text-6xl font-bold leading-none">39<span className="text-3xl">,90</span></span>
               </div>
               <p className="mt-2 text-xs opacity-90">ou 4x de R$ 11,07 no cartão</p>
+              <p className="mt-2 inline-block rounded-full bg-[var(--gold)]/20 px-3 py-1 text-[11px] font-bold uppercase tracking-wider text-[var(--gold-soft)] ring-1 ring-[var(--gold)]/40">
+                Economia de R$ 282,10
+              </p>
 
               <div className="mt-6">
                 <CTA sub="🔒 Pagamento 100% seguro · Acesso imediato">QUERO ACESSO IMEDIATO</CTA>
+              </div>
+
+              <div className="mx-auto mt-5 flex max-w-md items-start gap-2 rounded-xl bg-white/5 px-4 py-3 text-left text-[11px] leading-relaxed text-white/90 ring-1 ring-white/15">
+                <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0 text-[var(--gold-soft)]" />
+                <span>Esta condição promocional pode ser encerrada sem aviso após o término desta campanha.</span>
               </div>
 
               <div className="mt-5 flex flex-wrap items-center justify-center gap-x-4 gap-y-2 text-[11px] opacity-90">
