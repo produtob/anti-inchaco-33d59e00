@@ -743,7 +743,7 @@ function LandingPage() {
               <span className="absolute -bottom-1 rounded-full bg-[var(--primary-deep)] px-3 py-0.5 text-[10px] font-bold uppercase tracking-widest text-white">7 dias</span>
             </div>
             <div>
-              <h3 className="font-display text-2xl font-bold text-primary-deep">Garantia incondicional de 7 dias</h3>
+              <h3 className="font-display text-2xl font-bold text-primary-deep sm:text-3xl">Experimente sem risco durante 7 dias</h3>
               <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
                 Aplique o método por 7 dias. Se você não sentir <strong>menos inchaço, mais leveza e roupas servindo melhor</strong>, é só enviar um e-mail e devolvemos 100% do seu investimento. Sem perguntas. O risco é todo nosso.
               </p>
@@ -767,9 +767,9 @@ function LandingPage() {
       <section className="mt-16 px-4">
         <div className="mx-auto max-w-3xl rounded-3xl bg-gradient-to-br from-[var(--primary-deep)] to-[var(--primary)] p-6 text-center text-white shadow-[var(--shadow-premium)] sm:p-10">
           <Flower2 className="mx-auto h-10 w-10 text-[var(--gold-soft)]" />
-          <h2 className="mt-3 font-display text-2xl font-bold sm:text-4xl">Sua versão mais leve está a 14 dias de distância.</h2>
-          <p className="mx-auto mt-3 max-w-lg text-sm opacity-90 sm:text-base">
-            Comece hoje. Sinta a diferença na primeira semana. Volte a vestir o que ama.
+          <h2 className="mt-3 font-display text-2xl font-bold sm:text-4xl">Você pode continuar lidando com o inchaço todos os dias…</h2>
+          <p className="mx-auto mt-3 max-w-xl text-sm opacity-95 sm:text-base">
+            …ou começar hoje o método que já ajudou <strong className="text-[var(--gold-soft)]">mais de 12.000 mulheres</strong> a recuperar a leveza, a confiança e o orgulho de se olhar no espelho.
           </p>
           <div className="mt-6">
             <CTA sub="Acesso imediato após a confirmação do pagamento">COMEÇAR MEU MÉTODO AGORA</CTA>
