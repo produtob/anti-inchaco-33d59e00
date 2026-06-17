@@ -654,8 +654,11 @@ function LandingPage() {
       <section id="oferta" className="mt-20 px-4">
         <div className="mx-auto max-w-3xl">
           <div className="text-center">
-            <Pill tone="gold"><Sparkles className="h-3 w-3" /> Oferta especial de lançamento</Pill>
-            <h2 className="mt-3 text-2xl font-bold text-primary-deep sm:text-4xl">Tudo o que você recebe hoje</h2>
+            <Pill tone="gold"><Sparkles className="h-3 w-3" /> Sistema completo · Liberação imediata</Pill>
+            <h2 className="mt-3 text-balance text-2xl font-bold text-primary-deep sm:text-4xl">Seu Sistema Completo Anti-Inchaço Feminino</h2>
+            <p className="mx-auto mt-3 max-w-xl text-sm leading-relaxed text-muted-foreground sm:text-base">
+              Você não está adquirindo apenas um ebook. Está recebendo um <strong className="text-foreground">método completo, guiado e estruturado</strong>, criado para ajudar mulheres a reduzir o inchaço, recuperar a leveza e voltar a se sentir bem com o próprio corpo.
+            </p>
           </div>
 
           <div className="mt-8 overflow-hidden rounded-3xl bg-gradient-to-br from-[oklch(0.98_0.015_140)] to-card shadow-[var(--shadow-premium)] ring-1 ring-[color-mix(in_oklab,var(--gold)_30%,transparent)]">
@@ -670,8 +673,8 @@ function LandingPage() {
 
               {/* Items */}
               <div>
-                <h3 className="font-display text-xl font-bold text-primary-deep sm:text-2xl">Método Anti-Inchaço Feminino</h3>
-                <p className="mt-1 text-sm text-muted-foreground">Programa completo guiado de 14 dias + 5 bônus exclusivos</p>
+                <h3 className="font-display text-xl font-bold text-primary-deep sm:text-2xl">Liberado no primeiro dia</h3>
+                <p className="mt-1 text-sm text-muted-foreground">Tudo o que você recebe assim que confirmar o pagamento</p>
 
                 <ul className="mt-4 space-y-2.5">
                   {[
