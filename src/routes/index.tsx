@@ -279,13 +279,13 @@ function LandingPage() {
 
           <div className="mt-5 flex flex-col items-center gap-3 text-center">
             <Pill tone="gold">
-              <Sparkles className="h-3 w-3" /> Programa oficial · 14 dias
+              <Sparkles className="h-3 w-3" /> Programa oficial · Protocolo guiado de 14 dias
             </Pill>
             <h1 className="text-balance text-3xl font-bold leading-[1.05] text-primary-deep sm:text-5xl">
-              Sua barriga continua <em className="not-italic text-[var(--destructive)]">inchada</em> mesmo quando você tenta emagrecer?
+              O inchaço que você vê no espelho <em className="not-italic text-[var(--destructive)]">pode não ser gordura</em>.
             </h1>
             <p className="max-w-xl text-balance text-sm leading-relaxed text-muted-foreground sm:text-base">
-              Descubra o <strong className="text-foreground">Método Anti-Inchaço Feminino de 14 dias</strong> — o protocolo que reduz o inchaço, devolve a leveza e faz suas roupas favoritas voltarem a servir.
+              A maioria das mulheres acredita que está lutando contra gordura. Na realidade, o que mantém a barriga estufada é a combinação de <strong className="text-foreground">retenção de líquidos, inflamação silenciosa e intestino lento</strong> — e existe um protocolo guiado para corrigir isso em 14 dias.
             </p>
 
             <div className="flex flex-wrap items-center justify-center gap-3 pt-1 text-xs text-muted-foreground">
