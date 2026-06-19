@@ -4,6 +4,7 @@ import {
   Leaf, Droplets, Flower2, Check, Star, ShieldCheck, Lock, Clock,
   Sparkles, Heart, ArrowRight, Volume2, VolumeX, ChevronDown, X,
   Utensils, Activity, TrendingDown, AlertTriangle, MessageCircle, Gift,
+  Mail,
 } from "lucide-react";
 
 import ebookCover from "@/assets/ebook-cover.png.asset.json";
@@ -288,19 +289,18 @@ function QuizPopup() {
   const [open, setOpen] = useState(false);
   const [step, setStep] = useState(0);
   const [tags, setTags] = useState<string[]>([]);
-  const [phone, setPhone] = useState("");
-  const [phoneErr, setPhoneErr] = useState("");
+  const [email, setEmail] = useState("");
+  const [emailErr, setEmailErr] = useState("");
   const [done, setDone] = useState(false);
 
   useEffect(() => {
     if (typeof window === "undefined") return;
     if (sessionStorage.getItem(QUIZ_KEY)) return;
-    const t = setTimeout(() => setOpen(true), 22000);
     const onLeave = (e: MouseEvent) => {
       if (e.clientY <= 0 && !sessionStorage.getItem(QUIZ_KEY)) setOpen(true);
     };
     document.addEventListener("mouseleave", onLeave);
-    return () => { clearTimeout(t); document.removeEventListener("mouseleave", onLeave); };
+    return () => { document.removeEventListener("mouseleave", onLeave); };
   }, []);
 
   useEffect(() => {
@@ -331,27 +331,21 @@ function QuizPopup() {
     return Object.entries(c).sort((a, b) => b[1] - a[1])[0]?.[0] || "retencao";
   })();
 
-  const submitPhone = (e: React.FormEvent) => {
+  const submitEmail = (e: React.FormEvent) => {
     e.preventDefault();
-    const digits = phone.replace(/\D/g, "");
-    if (digits.length < 10 || digits.length > 13) {
-      setPhoneErr("Digite um WhatsApp válido com DDD.");
+    const trimmed = email.trim().toLowerCase();
+    const valid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmed);
+    if (!valid) {
+      setEmailErr("Digite um e-mail válido.");
       return;
     }
-    setPhoneErr("");
+    setEmailErr("");
     try {
-      localStorage.setItem("mai_lead", JSON.stringify({ phone: digits, type: dominant, ts: Date.now() }));
+      localStorage.setItem("mai_lead", JSON.stringify({ email: trimmed, type: dominant, ts: Date.now() }));
       trackEvent("Lead", { content_name: "Quiz Anti-Inchaço", content_category: dominant });
     } catch {}
     sessionStorage.setItem(QUIZ_KEY, "1");
     setDone(true);
-  };
-
-  const formatPhone = (v: string) => {
-    const d = v.replace(/\D/g, "").slice(0, 11);
-    if (d.length <= 2) return d;
-    if (d.length <= 7) return `(${d.slice(0, 2)}) ${d.slice(2)}`;
-    return `(${d.slice(0, 2)}) ${d.slice(2, 7)}-${d.slice(7)}`;
   };
 
   if (!open) return null;
@@ -405,30 +399,29 @@ function QuizPopup() {
         {!done && step >= QUIZ_QUESTIONS.length && (
           <div className="p-5 sm:p-6">
             <div className="flex items-center justify-center">
-              <Pill><MessageCircle className="h-3 w-3" /> Último passo</Pill>
+              <Pill><Mail className="h-3 w-3" /> Último passo</Pill>
             </div>
             <h3 className="mt-3 text-center font-display text-lg font-bold leading-tight text-primary-deep sm:text-xl">
               Pronto! Identificamos seu tipo de inchaço.
             </h3>
             <p className="mt-2 text-center text-sm text-muted-foreground">
-              Digite seu WhatsApp para receber o <strong className="text-foreground">resultado personalizado</strong> + uma <strong className="text-[var(--success)]">condição especial</strong> do Sistema 14D™.
+              Digite seu e-mail para receber o <strong className="text-foreground">resultado personalizado</strong> + uma <strong className="text-[var(--success)]">condição especial</strong> do Sistema 14D™.
             </p>
-            <form onSubmit={submitPhone} className="mt-4 space-y-3">
+            <form onSubmit={submitEmail} className="mt-4 space-y-3">
               <div>
-                <label htmlFor="wa" className="text-xs font-semibold text-foreground">Seu WhatsApp (com DDD)</label>
+                <label htmlFor="email" className="text-xs font-semibold text-foreground">Seu e-mail</label>
                 <input
-                  id="wa"
-                  type="tel"
-                  inputMode="numeric"
-                  autoComplete="tel"
-                  placeholder="(11) 99999-9999"
-                  value={phone}
-                  onChange={(e) => setPhone(formatPhone(e.target.value))}
+                  id="email"
+                  type="email"
+                  inputMode="email"
+                  autoComplete="email"
+                  placeholder="seu@email.com"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
                   className="mt-1 w-full rounded-xl border-2 border-border bg-background px-4 py-3 text-base font-medium text-foreground outline-none ring-0 focus:border-primary"
-                  maxLength={16}
                   required
                 />
-                {phoneErr && <p className="mt-1 text-xs text-[var(--destructive)]">{phoneErr}</p>}
+                {emailErr && <p className="mt-1 text-xs text-[var(--destructive)]">{emailErr}</p>}
               </div>
               <button
                 type="submit"
