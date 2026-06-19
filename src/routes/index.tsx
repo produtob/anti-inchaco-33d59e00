@@ -198,7 +198,7 @@ function StickyCTA() {
     <div className="fixed inset-x-0 bottom-0 z-40 border-t border-border bg-background/95 px-3 pb-[calc(env(safe-area-inset-bottom)+8px)] pt-2 backdrop-blur md:px-4">
       <div className="mx-auto flex max-w-2xl items-center gap-3">
         <div className="hidden flex-1 sm:block">
-          <p className="text-xs font-semibold text-foreground">Método Anti-Inchaço Feminino</p>
+          <p className="text-xs font-semibold text-foreground">Sistema Feminino 14D™</p>
           <p className="text-[11px] text-muted-foreground">De <span className="line-through">R$322</span> por <strong className="text-[var(--success)]">R$39,90</strong></p>
         </div>
         <a
