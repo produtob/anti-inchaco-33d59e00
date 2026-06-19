@@ -219,12 +219,15 @@ function StickyCTA() {
 /* ---------- FAQ ---------- */
 
 const faqs = [
-  { q: "Funciona para mulheres acima dos 40?", a: "Sim. O método foi desenhado especialmente para mulheres 35+, considerando alterações hormonais, metabolismo e retenção típica dessa fase." },
-  { q: "Preciso ir à academia?", a: "Não. O protocolo é caseiro. Os rituais drenantes e os movimentos são simples e podem ser feitos em qualquer ambiente." },
-  { q: "Preciso seguir uma dieta restritiva?", a: "Não. Você recebe um cardápio desinflamatório com substituições inteligentes, sem passar fome e sem cortar grupos alimentares essenciais." },
+  { q: "Tenho mais de 50 anos. Funciona pra mim?", a: "Sim. Boa parte das participantes tem entre 45 e 60 anos. O protocolo foi desenhado considerando alterações hormonais, metabolismo mais lento e retenção típica dessa fase." },
+  { q: "Estou na menopausa. Posso fazer?", a: "Pode. O Sistema 14D™ é especialmente eficaz em mulheres na pré e pós-menopausa, justamente quando a retenção e a inflamação ficam mais intensas." },
+  { q: "Preciso cozinhar muito ou fazer dieta restritiva?", a: "Não. Cardápio com substituições inteligentes, sem passar fome e sem cortar grupos alimentares essenciais. Receitas simples, do dia a dia." },
   { q: "Quanto tempo por dia eu preciso?", a: "Em média 10 a 15 minutos por dia para aplicar os rituais e organizar a rotina anti-inchaço." },
+  { q: "Já tentei várias dietas e nada funcionou. Por que agora seria diferente?", a: "Porque o problema raramente é só dieta — é retenção + inflamação + intestino lento. O Sistema 14D™ age nos 3 fatores ao mesmo tempo, com sequência guiada dia a dia." },
+  { q: "Funciona para mulheres acima dos 40?", a: "Sim. Foi desenhado especialmente para mulheres 35+, considerando alterações hormonais e retenção típica dessa fase." },
+  { q: "Preciso ir à academia?", a: "Não. O protocolo é caseiro. Os rituais drenantes e os movimentos são simples e podem ser feitos em qualquer ambiente." },
   { q: "Como recebo o material após a compra?", a: "O acesso é liberado imediatamente por e-mail, em qualquer celular, tablet ou computador. Acesso vitalício." },
-  { q: "E se eu não tiver resultado?", a: "Você tem 7 dias de garantia incondicional. Se não sentir diferença, devolvemos 100% do valor sem perguntas." },
+  { q: "E se eu não tiver resultado?", a: "Você tem a Garantia Blindada de 7 dias. Se não sentir seu corpo mais leve, devolvemos 100% do valor sem perguntas." },
 ];
 
 function FAQItem({ q, a }: { q: string; a: string }) {
