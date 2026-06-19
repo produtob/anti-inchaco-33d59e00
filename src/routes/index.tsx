@@ -399,30 +399,29 @@ function QuizPopup() {
         {!done && step >= QUIZ_QUESTIONS.length && (
           <div className="p-5 sm:p-6">
             <div className="flex items-center justify-center">
-              <Pill><MessageCircle className="h-3 w-3" /> Último passo</Pill>
+              <Pill><Mail className="h-3 w-3" /> Último passo</Pill>
             </div>
             <h3 className="mt-3 text-center font-display text-lg font-bold leading-tight text-primary-deep sm:text-xl">
               Pronto! Identificamos seu tipo de inchaço.
             </h3>
             <p className="mt-2 text-center text-sm text-muted-foreground">
-              Digite seu WhatsApp para receber o <strong className="text-foreground">resultado personalizado</strong> + uma <strong className="text-[var(--success)]">condição especial</strong> do Sistema 14D™.
+              Digite seu e-mail para receber o <strong className="text-foreground">resultado personalizado</strong> + uma <strong className="text-[var(--success)]">condição especial</strong> do Sistema 14D™.
             </p>
-            <form onSubmit={submitPhone} className="mt-4 space-y-3">
+            <form onSubmit={submitEmail} className="mt-4 space-y-3">
               <div>
-                <label htmlFor="wa" className="text-xs font-semibold text-foreground">Seu WhatsApp (com DDD)</label>
+                <label htmlFor="email" className="text-xs font-semibold text-foreground">Seu e-mail</label>
                 <input
-                  id="wa"
-                  type="tel"
-                  inputMode="numeric"
-                  autoComplete="tel"
-                  placeholder="(11) 99999-9999"
-                  value={phone}
-                  onChange={(e) => setPhone(formatPhone(e.target.value))}
+                  id="email"
+                  type="email"
+                  inputMode="email"
+                  autoComplete="email"
+                  placeholder="seu@email.com"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
                   className="mt-1 w-full rounded-xl border-2 border-border bg-background px-4 py-3 text-base font-medium text-foreground outline-none ring-0 focus:border-primary"
-                  maxLength={16}
                   required
                 />
-                {phoneErr && <p className="mt-1 text-xs text-[var(--destructive)]">{phoneErr}</p>}
+                {emailErr && <p className="mt-1 text-xs text-[var(--destructive)]">{emailErr}</p>}
               </div>
               <button
                 type="submit"
