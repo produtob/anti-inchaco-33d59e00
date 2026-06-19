@@ -285,24 +285,24 @@ function LandingPage() {
         <div className="mx-auto max-w-3xl px-4 pt-6 sm:pt-10">
           <div className="flex items-center justify-center gap-2">
             <Leaf className="h-5 w-5 text-primary" />
-            <span className="text-sm font-semibold tracking-wide text-primary-deep">MÉTODO ANTI-INCHAÇO FEMININO</span>
+            <span className="text-sm font-semibold tracking-wide text-primary-deep">SISTEMA FEMININO 14D™</span>
           </div>
 
           <div className="mt-5 flex flex-col items-center gap-3 text-center">
             <Pill tone="gold">
-              <Sparkles className="h-3 w-3" /> Programa oficial · Protocolo guiado de 14 dias
+              <Sparkles className="h-3 w-3" /> Protocolo Feminino de Reequilíbrio Corporal · 14 dias guiados
             </Pill>
             <h1 className="text-balance text-3xl font-bold leading-[1.05] text-primary-deep sm:text-5xl">
-              O inchaço que você vê no espelho <em className="not-italic text-[var(--destructive)]">pode não ser gordura</em>.
+              Você pode estar carregando <em className="not-italic text-[var(--destructive)]">anos de retenção, inflamação e desconforto</em> sem perceber.
             </h1>
             <p className="max-w-xl text-balance text-sm leading-relaxed text-muted-foreground sm:text-base">
-              A maioria das mulheres acredita que está lutando contra gordura. Na realidade, o que mantém a barriga estufada é a combinação de <strong className="text-foreground">retenção de líquidos, inflamação silenciosa e intestino lento</strong> — e existe um protocolo guiado para corrigir isso em 14 dias.
+              Existe um <strong className="text-foreground">protocolo feminino de 14 dias</strong> criado para ajudar seu corpo a voltar ao estado de leveza natural — agindo nos 3 fatores reais do inchaço: <strong className="text-foreground">retenção, inflamação silenciosa e intestino lento</strong>.
             </p>
 
             <div className="flex flex-wrap items-center justify-center gap-3 pt-1 text-xs text-muted-foreground">
               <span className="inline-flex items-center gap-1"><Stars /> <strong className="text-foreground">4,9</strong>/5</span>
               <span className="h-3 w-px bg-border" />
-              <span><strong className="text-foreground">+12.000</strong> mulheres impactadas</span>
+              <span><strong className="text-foreground">+12.000</strong> mulheres no protocolo 14D™</span>
             </div>
           </div>
 
