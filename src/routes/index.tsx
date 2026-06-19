@@ -198,7 +198,7 @@ function StickyCTA() {
     <div className="fixed inset-x-0 bottom-0 z-40 border-t border-border bg-background/95 px-3 pb-[calc(env(safe-area-inset-bottom)+8px)] pt-2 backdrop-blur md:px-4">
       <div className="mx-auto flex max-w-2xl items-center gap-3">
         <div className="hidden flex-1 sm:block">
-          <p className="text-xs font-semibold text-foreground">Método Anti-Inchaço Feminino</p>
+          <p className="text-xs font-semibold text-foreground">Sistema Feminino 14D™</p>
           <p className="text-[11px] text-muted-foreground">De <span className="line-through">R$322</span> por <strong className="text-[var(--success)]">R$39,90</strong></p>
         </div>
         <a
@@ -254,12 +254,23 @@ function LandingPage() {
   }, []);
   return (
     <div className="min-h-screen overflow-x-hidden bg-background pb-24 text-foreground">
+      {/* URGENCY BANNER */}
+      <div className="bg-[var(--destructive)] text-white">
+        <div className="mx-auto flex max-w-3xl items-center justify-center gap-2 px-4 py-1.5 text-center text-[11px] font-semibold tracking-wide sm:text-xs">
+          <span className="relative flex h-2 w-2 shrink-0">
+            <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-white/70" />
+            <span className="relative inline-flex h-2 w-2 rounded-full bg-white" />
+          </span>
+          <span><strong>191 mulheres</strong> iniciaram o protocolo hoje · vagas promocionais podem encerrar sem aviso</span>
+        </div>
+      </div>
+
       {/* Top trust bar */}
       <div className="bg-[var(--primary-deep)] text-white">
         <div className="mx-auto flex max-w-3xl flex-wrap items-center justify-center gap-x-4 gap-y-1 px-4 py-2 text-[11px] font-medium tracking-wide sm:text-xs">
           <span className="inline-flex items-center gap-1"><Star className="h-3.5 w-3.5 fill-[var(--gold)] text-[var(--gold)]" /> <strong>4,9/5</strong></span>
           <span className="hidden h-3 w-px bg-white/30 sm:inline-block" />
-          <span className="inline-flex items-center gap-1"><Sparkles className="h-3.5 w-3.5 text-[var(--gold-soft)]" /> <strong>+12.000</strong> mulheres impactadas</span>
+          <span className="inline-flex items-center gap-1"><Sparkles className="h-3.5 w-3.5 text-[var(--gold-soft)]" /> <strong>+12.000</strong> mulheres no protocolo</span>
           <span className="hidden h-3 w-px bg-white/30 sm:inline-block" />
           <span className="inline-flex items-center gap-1"><ShieldCheck className="h-3.5 w-3.5 text-[var(--gold-soft)]" /> Garantia 7 dias</span>
           <span className="hidden h-3 w-px bg-white/30 sm:inline-block" />
@@ -274,24 +285,24 @@ function LandingPage() {
         <div className="mx-auto max-w-3xl px-4 pt-6 sm:pt-10">
           <div className="flex items-center justify-center gap-2">
             <Leaf className="h-5 w-5 text-primary" />
-            <span className="text-sm font-semibold tracking-wide text-primary-deep">MÉTODO ANTI-INCHAÇO FEMININO</span>
+            <span className="text-sm font-semibold tracking-wide text-primary-deep">SISTEMA FEMININO 14D™</span>
           </div>
 
           <div className="mt-5 flex flex-col items-center gap-3 text-center">
             <Pill tone="gold">
-              <Sparkles className="h-3 w-3" /> Programa oficial · Protocolo guiado de 14 dias
+              <Sparkles className="h-3 w-3" /> Protocolo Feminino de Reequilíbrio Corporal · 14 dias guiados
             </Pill>
             <h1 className="text-balance text-3xl font-bold leading-[1.05] text-primary-deep sm:text-5xl">
-              O inchaço que você vê no espelho <em className="not-italic text-[var(--destructive)]">pode não ser gordura</em>.
+              Você pode estar carregando <em className="not-italic text-[var(--destructive)]">anos de retenção, inflamação e desconforto</em> sem perceber.
             </h1>
             <p className="max-w-xl text-balance text-sm leading-relaxed text-muted-foreground sm:text-base">
-              A maioria das mulheres acredita que está lutando contra gordura. Na realidade, o que mantém a barriga estufada é a combinação de <strong className="text-foreground">retenção de líquidos, inflamação silenciosa e intestino lento</strong> — e existe um protocolo guiado para corrigir isso em 14 dias.
+              Existe um <strong className="text-foreground">protocolo feminino de 14 dias</strong> criado para ajudar seu corpo a voltar ao estado de leveza natural — agindo nos 3 fatores reais do inchaço: <strong className="text-foreground">retenção, inflamação silenciosa e intestino lento</strong>.
             </p>
 
             <div className="flex flex-wrap items-center justify-center gap-3 pt-1 text-xs text-muted-foreground">
               <span className="inline-flex items-center gap-1"><Stars /> <strong className="text-foreground">4,9</strong>/5</span>
               <span className="h-3 w-px bg-border" />
-              <span><strong className="text-foreground">+12.000</strong> mulheres impactadas</span>
+              <span><strong className="text-foreground">+12.000</strong> mulheres no protocolo 14D™</span>
             </div>
           </div>
 
@@ -550,12 +561,23 @@ function LandingPage() {
             <p className="text-5xl font-bold font-display">4,9</p>
             <p className="text-sm opacity-90">Avaliação média de mais de <strong>12.000 mulheres</strong></p>
           </div>
+          <p className="mx-auto mt-5 max-w-xl text-sm leading-relaxed opacity-90 sm:text-base">
+            Mais de <strong className="text-[var(--gold-soft)]">12.000 mulheres</strong> já iniciaram o protocolo 14D™ e registraram melhorias em:
+          </p>
+          <div className="mx-auto mt-4 grid max-w-xl grid-cols-2 gap-2 text-left text-xs sm:grid-cols-5 sm:text-[11px]">
+            {["Retenção", "Digestão", "Conforto abdominal", "Sensação de leveza", "Autoestima"].map((b) => (
+              <div key={b} className="flex items-center gap-1.5 rounded-full bg-white/10 px-3 py-1.5 ring-1 ring-white/15">
+                <Check className="h-3.5 w-3.5 text-[var(--gold-soft)]" />
+                <span className="font-medium">{b}</span>
+              </div>
+            ))}
+          </div>
           <div className="mx-auto mt-6 inline-flex items-center gap-2 rounded-full bg-white/10 px-4 py-2 text-xs font-medium ring-1 ring-white/20">
             <span className="relative flex h-2 w-2">
               <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[var(--gold)] opacity-75" />
               <span className="relative inline-flex h-2 w-2 rounded-full bg-[var(--gold)]" />
             </span>
-            <strong>191 mulheres</strong> começaram o método nas últimas 24h
+            <strong>191 mulheres</strong> começaram o protocolo nas últimas 24h
           </div>
         </div>
       </section>
@@ -650,14 +672,34 @@ function LandingPage() {
         </div>
       </section>
 
+      {/* OBJEÇÕES */}
+      <section className="mx-auto mt-20 max-w-3xl px-4">
+        <div className="text-center">
+          <Pill><Heart className="h-3 w-3" /> Talvez você esteja pensando…</Pill>
+          <h2 className="mt-3 text-2xl font-bold text-primary-deep sm:text-4xl">As 3 dúvidas mais comuns antes de começar</h2>
+        </div>
+        <div className="mt-8 space-y-3">
+          {[
+            { q: "“Já tentei de tudo.”", a: "Perfeito. A maioria das mulheres que entra no protocolo 14D™ também dizia isso — e foi exatamente por isso que finalmente funcionou. O problema nunca foi você, foi a abordagem." },
+            { q: "“Não tenho tempo.”", a: "O protocolo leva poucos minutos por dia. Foi desenhado para mulheres ocupadas, com rotina pesada, filhos, casa e trabalho." },
+            { q: "“Tenho mais de 40 anos.”", a: "Grande parte das participantes tem entre 40 e 55 anos. O método foi criado considerando alterações hormonais, metabolismo mais lento e retenção típica dessa fase." },
+          ].map((e) => (
+            <div key={e.q} className="rounded-2xl bg-card p-5 shadow-[var(--shadow-soft)] ring-1 ring-border">
+              <p className="text-sm font-bold text-primary-deep sm:text-base">{e.q}</p>
+              <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{e.a}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+
       {/* OFERTA */}
       <section id="oferta" className="mt-20 px-4">
         <div className="mx-auto max-w-3xl">
           <div className="text-center">
-            <Pill tone="gold"><Sparkles className="h-3 w-3" /> Sistema completo · Liberação imediata</Pill>
-            <h2 className="mt-3 text-balance text-2xl font-bold text-primary-deep sm:text-4xl">Seu Sistema Completo Anti-Inchaço Feminino</h2>
+            <Pill tone="gold"><Sparkles className="h-3 w-3" /> Sistema 14D™ · Liberação imediata</Pill>
+            <h2 className="mt-3 text-balance text-2xl font-bold text-primary-deep sm:text-4xl">Protocolo Feminino de Reequilíbrio Corporal 14D™</h2>
             <p className="mx-auto mt-3 max-w-xl text-sm leading-relaxed text-muted-foreground sm:text-base">
-              Você não está adquirindo apenas um ebook. Está recebendo um <strong className="text-foreground">método completo, guiado e estruturado</strong>, criado para ajudar mulheres a reduzir o inchaço, recuperar a leveza e voltar a se sentir bem com o próprio corpo.
+              Você não está adquirindo apenas um ebook. Está entrando em um <strong className="text-foreground">sistema feminino completo, guiado dia a dia</strong>, criado para reorganizar seu corpo em 14 dias — agindo na retenção, na inflamação e no intestino.
             </p>
           </div>
 
@@ -678,7 +720,7 @@ function LandingPage() {
 
                 <ul className="mt-4 space-y-2.5">
                   {[
-                    { t: "Método Anti-Inchaço Feminino (14 dias)", v: "R$ 97" },
+                    { t: "Protocolo Feminino 14D™ (sistema guiado)", v: "R$ 97" },
                     { t: "Cardápio Desinflamatório completo", v: "R$ 47" },
                     { t: "Guia do Intestino Funcional", v: "R$ 47" },
                     { t: "Ritual Drenante (passo a passo)", v: "R$ 47" },
