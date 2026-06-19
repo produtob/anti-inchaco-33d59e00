@@ -1056,6 +1056,28 @@ function LandingPage() {
         </div>
       </section>
 
+      {/* WHATSAPP SUPPORT */}
+      <section className="mx-auto mt-12 max-w-3xl px-4">
+        <div className="flex flex-col items-center gap-3 rounded-2xl bg-[oklch(0.97_0.05_150)] p-5 text-center shadow-[var(--shadow-soft)] ring-1 ring-[color-mix(in_oklab,var(--success)_25%,transparent)] sm:flex-row sm:text-left">
+          <div className="grid h-12 w-12 shrink-0 place-items-center rounded-full bg-[var(--success)] text-white">
+            <MessageCircle className="h-6 w-6" />
+          </div>
+          <div className="flex-1">
+            <p className="font-display text-base font-bold text-primary-deep sm:text-lg">Ainda com dúvidas?</p>
+            <p className="text-sm text-muted-foreground">Nossa equipe responde rapidinho pelo WhatsApp — antes e depois da compra.</p>
+          </div>
+          <a
+            href="https://wa.me/5511999999999?text=Ol%C3%A1!%20Tenho%20uma%20d%C3%BAvida%20sobre%20o%20Sistema%2014D%E2%84%A2"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex shrink-0 items-center gap-2 rounded-xl bg-[var(--success)] px-4 py-2.5 text-sm font-bold text-white shadow-md"
+          >
+            <MessageCircle className="h-4 w-4" /> Falar no WhatsApp
+          </a>
+        </div>
+      </section>
+
+
       {/* FINAL CTA */}
       <section className="mt-16 px-4">
         <div className="mx-auto max-w-3xl rounded-3xl bg-gradient-to-br from-[var(--primary-deep)] to-[var(--primary)] p-6 text-center text-white shadow-[var(--shadow-premium)] sm:p-10">
