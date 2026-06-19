@@ -4,6 +4,7 @@ import {
   Leaf, Droplets, Flower2, Check, Star, ShieldCheck, Lock, Clock,
   Sparkles, Heart, ArrowRight, Volume2, VolumeX, ChevronDown, X,
   Utensils, Activity, TrendingDown, AlertTriangle, MessageCircle, Gift,
+  Mail,
 } from "lucide-react";
 
 import ebookCover from "@/assets/ebook-cover.png.asset.json";
