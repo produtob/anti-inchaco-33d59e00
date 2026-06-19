@@ -512,24 +512,24 @@ function LandingPage() {
       {/* HERO */}
       <header className="relative">
         <div className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(80%_50%_at_50%_0%,oklch(0.95_0.05_145)_0%,transparent_70%)]" />
-        <div className="mx-auto max-w-3xl px-4 pt-6 sm:pt-10">
+        <div className="mx-auto max-w-3xl px-4 pt-3 sm:pt-6">
           <div className="flex items-center justify-center gap-2">
             <Leaf className="h-5 w-5 text-primary" />
             <span className="text-sm font-semibold tracking-wide text-primary-deep">SISTEMA FEMININO 14D™</span>
           </div>
 
-          <div className="mt-5 flex flex-col items-center gap-3 text-center">
+          <div className="mt-3 flex flex-col items-center gap-2 text-center sm:mt-4 sm:gap-3">
             <Pill tone="gold">
-              <Sparkles className="h-3 w-3" /> Protocolo Feminino de Reequilíbrio Corporal · 14 dias guiados
+              <Sparkles className="h-3 w-3" /> Protocolo Feminino · 14 dias guiados
             </Pill>
-            <h1 className="text-balance text-3xl font-bold leading-[1.05] text-primary-deep sm:text-5xl">
-              Você pode estar carregando <em className="not-italic text-[var(--destructive)]">anos de retenção, inflamação e desconforto</em> sem perceber.
+            <h1 className="text-balance text-[26px] font-bold leading-[1.08] text-primary-deep sm:text-5xl">
+              Sua barriga pode estar inchada por <em className="not-italic text-[var(--destructive)]">retenção e inflamação</em> — não por gordura.
             </h1>
-            <p className="max-w-xl text-balance text-sm leading-relaxed text-muted-foreground sm:text-base">
-              Existe um <strong className="text-foreground">protocolo feminino de 14 dias</strong> criado para ajudar seu corpo a voltar ao estado de leveza natural — agindo nos 3 fatores reais do inchaço: <strong className="text-foreground">retenção, inflamação silenciosa e intestino lento</strong>.
+            <p className="max-w-xl text-balance text-[13px] leading-snug text-muted-foreground sm:text-base">
+              Descubra o <strong className="text-foreground">protocolo feminino de 14 dias</strong> que já ajudou mais de <strong className="text-foreground">12.000 mulheres</strong> a se sentirem leves novamente.
             </p>
 
-            <div className="flex flex-wrap items-center justify-center gap-3 pt-1 text-xs text-muted-foreground">
+            <div className="flex flex-wrap items-center justify-center gap-x-3 gap-y-1 pt-0.5 text-[11px] text-muted-foreground sm:text-xs">
               <span className="inline-flex items-center gap-1"><Stars /> <strong className="text-foreground">4,9</strong>/5</span>
               <span className="h-3 w-px bg-border" />
               <span><strong className="text-foreground">+12.000</strong> mulheres no protocolo 14D™</span>
@@ -537,18 +537,44 @@ function LandingPage() {
           </div>
 
           {/* VSL */}
-          <div className="mt-6 sm:mt-8">
+          <div className="mt-3 sm:mt-5">
             <VSLPlayer />
           </div>
 
-          <div className="mt-6">
-            <CTA sub="Acesso imediato · Pagamento 100% seguro">QUERO DESINCHAR EM 14 DIAS</CTA>
+          <div className="mt-4">
+            <CTA sub="Acesso imediato · Pagamento 100% seguro">QUERO ME SENTIR LEVE NOVAMENTE</CTA>
+            <p className="mt-2 text-center text-[11px] text-muted-foreground">
+              Menos de <strong className="text-foreground">R$ 2,85/dia</strong> durante o protocolo · ou <strong className="text-foreground">4x de R$11,07</strong>
+            </p>
           </div>
 
-          <div className="mt-5 flex items-center justify-center gap-4 text-[11px] text-muted-foreground">
+          <div className="mt-3 flex items-center justify-center gap-3 text-[11px] text-muted-foreground">
             <span className="inline-flex items-center gap-1"><Lock className="h-3.5 w-3.5" /> Compra segura</span>
-            <span className="inline-flex items-center gap-1"><ShieldCheck className="h-3.5 w-3.5" /> 7 dias de garantia</span>
+            <span className="inline-flex items-center gap-1"><ShieldCheck className="h-3.5 w-3.5" /> Garantia 7 dias</span>
             <span className="inline-flex items-center gap-1"><Clock className="h-3.5 w-3.5" /> Acesso imediato</span>
+          </div>
+
+          {/* Quick social proof under VSL */}
+          <div className="mt-6 grid grid-cols-1 gap-3 sm:grid-cols-2">
+            {[
+              { n: "Aline R.", age: 38, t: "Em 6 dias já notei diferença", d: "Comecei o protocolo na segunda e na sexta consegui fechar a calça que estava guardada." },
+              { n: "Patrícia M.", age: 42, t: "Sumiu o peso depois do almoço", d: "Eu vivia empachada. Hoje me sinto leve a tarde inteira." },
+            ].map((t) => (
+              <div key={t.n} className="rounded-2xl bg-card p-4 shadow-[var(--shadow-soft)] ring-1 ring-border">
+                <Stars />
+                <p className="mt-1.5 text-sm font-bold text-primary-deep">"{t.t}"</p>
+                <p className="mt-1.5 text-[13px] leading-snug text-muted-foreground">{t.d}</p>
+                <p className="mt-2 text-[11px] font-semibold text-foreground">— {t.n}, {t.age} anos · <span className="font-normal text-muted-foreground">Compra verificada</span></p>
+              </div>
+            ))}
+          </div>
+
+          <div className="mt-4 overflow-hidden rounded-2xl bg-card shadow-[var(--shadow-soft)] ring-1 ring-border">
+            <img src={faceBA.url} alt="Antes e depois — rosto desinchado" className="w-full" loading="lazy" />
+            <div className="grid grid-cols-2 border-t border-border text-center text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
+              <div className="border-r border-border py-2">Antes</div>
+              <div className="py-2 text-[var(--success)]">Depois</div>
+            </div>
           </div>
         </div>
       </header>
