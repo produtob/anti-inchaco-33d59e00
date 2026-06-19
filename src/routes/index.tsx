@@ -1068,6 +1068,7 @@ function LandingPage() {
       </footer>
 
       <StickyCTA />
+      <QuizPopup />
     </div>
   );
 }
