@@ -796,15 +796,6 @@ function LandingPage() {
           </div>
         </div>
 
-        <div className="mt-6 overflow-hidden rounded-3xl bg-card shadow-[var(--shadow-premium)] ring-1 ring-border">
-          <div className="relative">
-            <img src={bodyTransform.url} alt="Transformação corporal" className="w-full" loading="lazy" />
-          </div>
-          <div className="grid grid-cols-2 border-t border-border text-center text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-            <div className="border-r border-border py-2">Antes</div>
-            <div className="py-2 text-[var(--success)]">Depois</div>
-          </div>
-        </div>
 
         <p className="mt-3 text-center text-[11px] italic text-muted-foreground">*Resultados podem variar conforme rotina, alimentação e organismo de cada mulher.</p>
       </section>
