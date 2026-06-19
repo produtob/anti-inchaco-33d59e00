@@ -720,7 +720,7 @@ function LandingPage() {
 
                 <ul className="mt-4 space-y-2.5">
                   {[
-                    { t: "Método Anti-Inchaço Feminino (14 dias)", v: "R$ 97" },
+                    { t: "Protocolo Feminino 14D™ (sistema guiado)", v: "R$ 97" },
                     { t: "Cardápio Desinflamatório completo", v: "R$ 47" },
                     { t: "Guia do Intestino Funcional", v: "R$ 47" },
                     { t: "Ritual Drenante (passo a passo)", v: "R$ 47" },
