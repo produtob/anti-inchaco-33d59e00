@@ -561,12 +561,23 @@ function LandingPage() {
             <p className="text-5xl font-bold font-display">4,9</p>
             <p className="text-sm opacity-90">Avaliação média de mais de <strong>12.000 mulheres</strong></p>
           </div>
+          <p className="mx-auto mt-5 max-w-xl text-sm leading-relaxed opacity-90 sm:text-base">
+            Mais de <strong className="text-[var(--gold-soft)]">12.000 mulheres</strong> já iniciaram o protocolo 14D™ e registraram melhorias em:
+          </p>
+          <div className="mx-auto mt-4 grid max-w-xl grid-cols-2 gap-2 text-left text-xs sm:grid-cols-5 sm:text-[11px]">
+            {["Retenção", "Digestão", "Conforto abdominal", "Sensação de leveza", "Autoestima"].map((b) => (
+              <div key={b} className="flex items-center gap-1.5 rounded-full bg-white/10 px-3 py-1.5 ring-1 ring-white/15">
+                <Check className="h-3.5 w-3.5 text-[var(--gold-soft)]" />
+                <span className="font-medium">{b}</span>
+              </div>
+            ))}
+          </div>
           <div className="mx-auto mt-6 inline-flex items-center gap-2 rounded-full bg-white/10 px-4 py-2 text-xs font-medium ring-1 ring-white/20">
             <span className="relative flex h-2 w-2">
               <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[var(--gold)] opacity-75" />
               <span className="relative inline-flex h-2 w-2 rounded-full bg-[var(--gold)]" />
             </span>
-            <strong>191 mulheres</strong> começaram o método nas últimas 24h
+            <strong>191 mulheres</strong> começaram o protocolo nas últimas 24h
           </div>
         </div>
       </section>
