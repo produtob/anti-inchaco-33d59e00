@@ -3,7 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import {
   Leaf, Droplets, Flower2, Check, Star, ShieldCheck, Lock, Clock,
   Sparkles, Heart, ArrowRight, Volume2, VolumeX, ChevronDown, X,
-  Utensils, Activity, TrendingDown, AlertTriangle,
+  Utensils, Activity, TrendingDown, AlertTriangle, MessageCircle, Gift,
 } from "lucide-react";
 
 import ebookCover from "@/assets/ebook-cover.png.asset.json";
@@ -130,7 +130,7 @@ function VSLPlayer() {
     <div className="relative mx-auto w-full max-w-2xl">
       <div className="absolute -inset-2 rounded-3xl bg-gradient-to-br from-[var(--primary-soft)] via-transparent to-[var(--gold-soft)] opacity-60 blur-xl" />
       <div className="relative overflow-hidden rounded-2xl bg-black shadow-[var(--shadow-premium)] ring-1 ring-[color-mix(in_oklab,var(--primary)_20%,transparent)]">
-        <div className="relative aspect-[9/16] sm:aspect-video">
+        <div className="relative aspect-video">
           <video
             ref={videoRef}
             src={vslVideo.url}
@@ -239,6 +239,240 @@ function FAQItem({ q, a }: { q: string; a: string }) {
   );
 }
 
+/* ---------- Quiz Popup (lead capture) ---------- */
+
+const QUIZ_KEY = "mai_quiz_seen_v1";
+const QUIZ_QUESTIONS = [
+  {
+    q: "Em que momento do dia você sente MAIS inchaço?",
+    options: [
+      { v: "tarde", t: "Da tarde em diante", tag: "retencao" },
+      { v: "refeicao", t: "Logo após as refeições", tag: "inflamacao" },
+      { v: "manha", t: "Acordo já estufada", tag: "intestino" },
+    ],
+  },
+  {
+    q: "O que você sente com mais frequência?",
+    options: [
+      { v: "pernas", t: "Pernas pesadas / anel marcando", tag: "retencao" },
+      { v: "gases", t: "Gases e empachamento", tag: "inflamacao" },
+      { v: "preso", t: "Intestino preso ou irregular", tag: "intestino" },
+    ],
+  },
+  {
+    q: "Sua roupa aperta mais quando?",
+    options: [
+      { v: "tpm", t: "Perto do ciclo / TPM", tag: "retencao" },
+      { v: "comer", t: "Depois de comer", tag: "inflamacao" },
+      { v: "sempre", t: "Quase todo dia", tag: "intestino" },
+    ],
+  },
+];
+
+const QUIZ_RESULTS: Record<string, { title: string; desc: string }> = {
+  retencao: {
+    title: "Tipo 1 — Inchaço por Retenção Hídrica",
+    desc: "Seu corpo está segurando líquido nos tecidos. O Protocolo 14D™ age direto na drenagem e no equilíbrio hormonal feminino.",
+  },
+  inflamacao: {
+    title: "Tipo 2 — Inchaço Inflamatório",
+    desc: "Alimentos pró-inflamatórios estão mantendo seu abdômen distendido. O cardápio desinflamatório do Sistema 14D™ corrige isso.",
+  },
+  intestino: {
+    title: "Tipo 3 — Inchaço por Intestino Lento",
+    desc: "Seu trânsito intestinal está travado. O Guia do Intestino Funcional do Sistema 14D™ destrava em poucos dias.",
+  },
+};
+
+function QuizPopup() {
+  const [open, setOpen] = useState(false);
+  const [step, setStep] = useState(0);
+  const [tags, setTags] = useState<string[]>([]);
+  const [phone, setPhone] = useState("");
+  const [phoneErr, setPhoneErr] = useState("");
+  const [done, setDone] = useState(false);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    if (sessionStorage.getItem(QUIZ_KEY)) return;
+    const t = setTimeout(() => setOpen(true), 22000);
+    const onLeave = (e: MouseEvent) => {
+      if (e.clientY <= 0 && !sessionStorage.getItem(QUIZ_KEY)) setOpen(true);
+    };
+    document.addEventListener("mouseleave", onLeave);
+    return () => { clearTimeout(t); document.removeEventListener("mouseleave", onLeave); };
+  }, []);
+
+  useEffect(() => {
+    if (open) {
+      document.body.style.overflow = "hidden";
+      try { trackEvent("ViewContent", { content_name: "Quiz Anti-Inchaço" }); } catch {}
+    } else {
+      document.body.style.overflow = "";
+    }
+    return () => { document.body.style.overflow = ""; };
+  }, [open]);
+
+  const close = () => {
+    sessionStorage.setItem(QUIZ_KEY, "1");
+    setOpen(false);
+  };
+
+  const pick = (tag: string) => {
+    const next = [...tags, tag];
+    setTags(next);
+    if (step < QUIZ_QUESTIONS.length - 1) setStep(step + 1);
+    else setStep(QUIZ_QUESTIONS.length); // move to capture
+  };
+
+  const dominant = (() => {
+    const c: Record<string, number> = {};
+    tags.forEach((t) => (c[t] = (c[t] || 0) + 1));
+    return Object.entries(c).sort((a, b) => b[1] - a[1])[0]?.[0] || "retencao";
+  })();
+
+  const submitPhone = (e: React.FormEvent) => {
+    e.preventDefault();
+    const digits = phone.replace(/\D/g, "");
+    if (digits.length < 10 || digits.length > 13) {
+      setPhoneErr("Digite um WhatsApp válido com DDD.");
+      return;
+    }
+    setPhoneErr("");
+    try {
+      localStorage.setItem("mai_lead", JSON.stringify({ phone: digits, type: dominant, ts: Date.now() }));
+      trackEvent("Lead", { content_name: "Quiz Anti-Inchaço", content_category: dominant });
+    } catch {}
+    sessionStorage.setItem(QUIZ_KEY, "1");
+    setDone(true);
+  };
+
+  const formatPhone = (v: string) => {
+    const d = v.replace(/\D/g, "").slice(0, 11);
+    if (d.length <= 2) return d;
+    if (d.length <= 7) return `(${d.slice(0, 2)}) ${d.slice(2)}`;
+    return `(${d.slice(0, 2)}) ${d.slice(2, 7)}-${d.slice(7)}`;
+  };
+
+  if (!open) return null;
+
+  const result = QUIZ_RESULTS[dominant];
+  const totalSteps = QUIZ_QUESTIONS.length + 1;
+  const currentStep = Math.min(step, QUIZ_QUESTIONS.length);
+  const progress = done ? 100 : ((currentStep) / totalSteps) * 100;
+
+  return (
+    <div className="fixed inset-0 z-[60] flex items-end justify-center bg-black/60 px-3 pb-3 pt-6 backdrop-blur-sm sm:items-center sm:p-4">
+      <div className="relative w-full max-w-md overflow-hidden rounded-2xl bg-card shadow-[var(--shadow-premium)] ring-1 ring-border">
+        <button
+          onClick={close}
+          aria-label="Fechar"
+          className="absolute right-2 top-2 z-10 grid h-8 w-8 place-items-center rounded-full bg-background/80 text-muted-foreground ring-1 ring-border hover:text-foreground"
+        >
+          <X className="h-4 w-4" />
+        </button>
+
+        <div className="h-1 w-full bg-border">
+          <div className="h-full bg-[var(--success)] transition-all" style={{ width: `${progress}%` }} />
+        </div>
+
+        {!done && step < QUIZ_QUESTIONS.length && (
+          <div className="p-5 sm:p-6">
+            <div className="flex items-center justify-center gap-1.5">
+              <Pill tone="gold"><Gift className="h-3 w-3" /> Teste gratuito · 60 segundos</Pill>
+            </div>
+            <h3 className="mt-3 text-center font-display text-lg font-bold leading-tight text-primary-deep sm:text-xl">
+              Descubra qual dos <span className="text-[var(--destructive)]">3 tipos de inchaço</span> está afetando você
+            </h3>
+            <p className="mt-1 text-center text-xs text-muted-foreground">Pergunta {step + 1} de {QUIZ_QUESTIONS.length}</p>
+
+            <p className="mt-4 text-sm font-semibold text-foreground sm:text-base">{QUIZ_QUESTIONS[step].q}</p>
+            <div className="mt-3 space-y-2">
+              {QUIZ_QUESTIONS[step].options.map((o) => (
+                <button
+                  key={o.v}
+                  onClick={() => pick(o.tag)}
+                  className="flex w-full items-center justify-between gap-3 rounded-xl border-2 border-border bg-background px-4 py-3 text-left text-sm font-medium text-foreground transition active:scale-[0.99] hover:border-primary hover:bg-[var(--primary-soft)]"
+                >
+                  <span>{o.t}</span>
+                  <ArrowRight className="h-4 w-4 shrink-0 text-primary" />
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {!done && step >= QUIZ_QUESTIONS.length && (
+          <div className="p-5 sm:p-6">
+            <div className="flex items-center justify-center">
+              <Pill><MessageCircle className="h-3 w-3" /> Último passo</Pill>
+            </div>
+            <h3 className="mt-3 text-center font-display text-lg font-bold leading-tight text-primary-deep sm:text-xl">
+              Pronto! Identificamos seu tipo de inchaço.
+            </h3>
+            <p className="mt-2 text-center text-sm text-muted-foreground">
+              Digite seu WhatsApp para receber o <strong className="text-foreground">resultado personalizado</strong> + uma <strong className="text-[var(--success)]">condição especial</strong> do Sistema 14D™.
+            </p>
+            <form onSubmit={submitPhone} className="mt-4 space-y-3">
+              <div>
+                <label htmlFor="wa" className="text-xs font-semibold text-foreground">Seu WhatsApp (com DDD)</label>
+                <input
+                  id="wa"
+                  type="tel"
+                  inputMode="numeric"
+                  autoComplete="tel"
+                  placeholder="(11) 99999-9999"
+                  value={phone}
+                  onChange={(e) => setPhone(formatPhone(e.target.value))}
+                  className="mt-1 w-full rounded-xl border-2 border-border bg-background px-4 py-3 text-base font-medium text-foreground outline-none ring-0 focus:border-primary"
+                  maxLength={16}
+                  required
+                />
+                {phoneErr && <p className="mt-1 text-xs text-[var(--destructive)]">{phoneErr}</p>}
+              </div>
+              <button
+                type="submit"
+                className="cta-pulse flex w-full items-center justify-center gap-2 rounded-xl bg-[var(--success)] px-5 py-3.5 text-sm font-bold text-white shadow-[var(--shadow-premium)]"
+              >
+                Ver meu resultado <ArrowRight className="h-4 w-4" />
+              </button>
+              <p className="text-center text-[10px] text-muted-foreground">Seus dados estão seguros · Sem spam</p>
+            </form>
+          </div>
+        )}
+
+        {done && (
+          <div className="p-5 sm:p-6">
+            <div className="flex items-center justify-center">
+              <Pill tone="gold"><Sparkles className="h-3 w-3" /> Resultado pronto</Pill>
+            </div>
+            <h3 className="mt-3 text-center font-display text-xl font-bold leading-tight text-primary-deep">
+              {result.title}
+            </h3>
+            <p className="mt-2 text-center text-sm leading-relaxed text-muted-foreground">{result.desc}</p>
+            <div className="mt-4 rounded-xl bg-[var(--primary-soft)] p-3 text-center text-xs text-primary-deep ring-1 ring-[color-mix(in_oklab,var(--primary)_25%,transparent)]">
+              👉 Aplicar o protocolo agora com <strong>50% OFF</strong> — apenas <strong className="text-[var(--success)]">R$ 39,90</strong>
+            </div>
+            <a
+              href={CHECKOUT_URL}
+              onClick={() => {
+                trackEvent("AddToCart", { content_name: "Método Anti-Inchaço Feminino", currency: "BRL", value: 39.90 });
+                trackEvent("InitiateCheckout", { content_name: "Método Anti-Inchaço Feminino", currency: "BRL", value: 39.90, num_items: 1 });
+              }}
+              className="cta-pulse mt-3 flex w-full items-center justify-center gap-2 rounded-xl bg-[var(--success)] px-5 py-3.5 text-sm font-bold text-white shadow-[var(--shadow-premium)]"
+            >
+              Quero começar meu protocolo <ArrowRight className="h-4 w-4" />
+            </a>
+            <button onClick={close} className="mt-2 w-full text-center text-[11px] text-muted-foreground underline">
+              Continuar lendo a página
+            </button>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
 /* ---------- Page ---------- */
 
 function LandingPage() {
@@ -254,14 +488,14 @@ function LandingPage() {
   }, []);
   return (
     <div className="min-h-screen overflow-x-hidden bg-background pb-24 text-foreground">
-      {/* URGENCY BANNER */}
-      <div className="bg-[var(--destructive)] text-white">
-        <div className="mx-auto flex max-w-3xl items-center justify-center gap-2 px-4 py-1.5 text-center text-[11px] font-semibold tracking-wide sm:text-xs">
+      {/* URGENCY BANNER (sticky) */}
+      <div className="sticky top-0 z-30 bg-[var(--destructive)] text-white shadow-md">
+        <div className="mx-auto flex max-w-3xl items-center justify-center gap-2 px-3 py-1.5 text-center text-[10.5px] font-semibold leading-tight tracking-wide sm:text-xs">
           <span className="relative flex h-2 w-2 shrink-0">
             <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-white/70" />
             <span className="relative inline-flex h-2 w-2 rounded-full bg-white" />
           </span>
-          <span><strong>191 mulheres</strong> iniciaram o protocolo hoje · vagas promocionais podem encerrar sem aviso</span>
+          <span><strong>191 mulheres</strong> iniciaram hoje · últimas vagas promocionais</span>
         </div>
       </div>
 
@@ -834,6 +1068,7 @@ function LandingPage() {
       </footer>
 
       <StickyCTA />
+      <QuizPopup />
     </div>
   );
 }
