@@ -188,25 +188,28 @@ function VSLPlayer() {
 /* ---------- Sticky CTA ---------- */
 
 function StickyCTA() {
-  const [show, setShow] = useState(false);
-  useEffect(() => {
-    const onScroll = () => setShow(window.scrollY > 600);
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
-  }, []);
-  if (!show) return null;
+  const handleClick = () => {
+    try {
+      trackEvent("AddToCart", { content_name: "Sistema Feminino 14D™", currency: "BRL", value: 39.90 });
+      trackEvent("InitiateCheckout", { content_name: "Sistema Feminino 14D™", currency: "BRL", value: 39.90, num_items: 1 });
+    } catch {}
+  };
   return (
     <div className="fixed inset-x-0 bottom-0 z-40 border-t border-border bg-background/95 px-3 pb-[calc(env(safe-area-inset-bottom)+8px)] pt-2 backdrop-blur md:px-4">
-      <div className="mx-auto flex max-w-2xl items-center gap-3">
-        <div className="hidden flex-1 sm:block">
-          <p className="text-xs font-semibold text-foreground">Sistema Feminino 14D™</p>
-          <p className="text-[11px] text-muted-foreground">De <span className="line-through">R$322</span> por <strong className="text-[var(--success)]">R$39,90</strong></p>
+      <div className="mx-auto flex max-w-2xl items-center gap-2">
+        <div className="flex flex-1 flex-col leading-tight">
+          <span className="text-[10px] font-semibold uppercase tracking-wide text-muted-foreground">Sistema 14D™</span>
+          <span className="text-[13px] font-bold text-foreground">
+            <span className="line-through opacity-60">R$322</span>{" "}
+            <span className="text-[var(--success)]">R$39,90</span>
+          </span>
         </div>
         <a
           href={CHECKOUT_URL}
-          className="cta-pulse flex flex-1 items-center justify-center gap-2 rounded-xl bg-[var(--success)] px-4 py-3 text-sm font-bold text-white shadow-lg"
+          onClick={handleClick}
+          className="cta-pulse flex flex-[1.4] items-center justify-center gap-1.5 rounded-xl bg-[var(--success)] px-3 py-3 text-[13px] font-bold leading-tight text-white shadow-lg sm:text-sm"
         >
-          Quero desinchar agora <ArrowRight className="h-4 w-4" />
+          COMEÇAR AGORA <ArrowRight className="h-4 w-4" />
         </a>
       </div>
     </div>
