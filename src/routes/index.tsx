@@ -1035,9 +1035,10 @@ function LandingPage() {
               <span className="absolute -bottom-1 rounded-full bg-[var(--primary-deep)] px-3 py-0.5 text-[10px] font-bold uppercase tracking-widest text-white">7 dias</span>
             </div>
             <div>
-              <h3 className="font-display text-2xl font-bold text-primary-deep sm:text-3xl">Experimente sem risco durante 7 dias</h3>
+              <Pill tone="gold"><ShieldCheck className="h-3 w-3" /> Garantia Blindada</Pill>
+              <h3 className="mt-2 font-display text-2xl font-bold text-primary-deep sm:text-3xl">Garantia Blindada de 7 Dias</h3>
               <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
-                Aplique o método por 7 dias. Se você não sentir <strong>menos inchaço, mais leveza e roupas servindo melhor</strong>, é só enviar um e-mail e devolvemos 100% do seu investimento. Sem perguntas. O risco é todo nosso.
+                Use o protocolo por 7 dias. Se você <strong>não sentir seu corpo mais leve</strong>, devolvemos <strong className="text-[var(--success)]">100% do seu investimento</strong>. Sem perguntas. Sem burocracia. O risco é todo nosso.
               </p>
             </div>
           </div>
