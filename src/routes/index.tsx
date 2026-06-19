@@ -296,12 +296,11 @@ function QuizPopup() {
   useEffect(() => {
     if (typeof window === "undefined") return;
     if (sessionStorage.getItem(QUIZ_KEY)) return;
-    const t = setTimeout(() => setOpen(true), 22000);
     const onLeave = (e: MouseEvent) => {
       if (e.clientY <= 0 && !sessionStorage.getItem(QUIZ_KEY)) setOpen(true);
     };
     document.addEventListener("mouseleave", onLeave);
-    return () => { clearTimeout(t); document.removeEventListener("mouseleave", onLeave); };
+    return () => { document.removeEventListener("mouseleave", onLeave); };
   }, []);
 
   useEffect(() => {
