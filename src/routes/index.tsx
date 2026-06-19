@@ -672,6 +672,26 @@ function LandingPage() {
         </div>
       </section>
 
+      {/* OBJEÇÕES */}
+      <section className="mx-auto mt-20 max-w-3xl px-4">
+        <div className="text-center">
+          <Pill><Heart className="h-3 w-3" /> Talvez você esteja pensando…</Pill>
+          <h2 className="mt-3 text-2xl font-bold text-primary-deep sm:text-4xl">As 3 dúvidas mais comuns antes de começar</h2>
+        </div>
+        <div className="mt-8 space-y-3">
+          {[
+            { q: "“Já tentei de tudo.”", a: "Perfeito. A maioria das mulheres que entra no protocolo 14D™ também dizia isso — e foi exatamente por isso que finalmente funcionou. O problema nunca foi você, foi a abordagem." },
+            { q: "“Não tenho tempo.”", a: "O protocolo leva poucos minutos por dia. Foi desenhado para mulheres ocupadas, com rotina pesada, filhos, casa e trabalho." },
+            { q: "“Tenho mais de 40 anos.”", a: "Grande parte das participantes tem entre 40 e 55 anos. O método foi criado considerando alterações hormonais, metabolismo mais lento e retenção típica dessa fase." },
+          ].map((e) => (
+            <div key={e.q} className="rounded-2xl bg-card p-5 shadow-[var(--shadow-soft)] ring-1 ring-border">
+              <p className="text-sm font-bold text-primary-deep sm:text-base">{e.q}</p>
+              <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{e.a}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+
       {/* OFERTA */}
       <section id="oferta" className="mt-20 px-4">
         <div className="mx-auto max-w-3xl">
