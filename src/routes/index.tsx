@@ -10,7 +10,7 @@ import {
 import ebookCover from "@/assets/ebook-cover.png.asset.json";
 import vslVideo from "@/assets/vsl.mp4.asset.json";
 import faceBA from "@/assets/face-before-after.jpg.asset.json";
-import bodyTransform from "@/assets/body-transform.png.asset.json";
+
 import illus1 from "@/assets/illus-1.png.asset.json";
 import illus2 from "@/assets/illus-2.png.asset.json";
 import illus3 from "@/assets/illus-3.png.asset.json";
