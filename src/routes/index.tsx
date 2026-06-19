@@ -130,7 +130,7 @@ function VSLPlayer() {
     <div className="relative mx-auto w-full max-w-2xl">
       <div className="absolute -inset-2 rounded-3xl bg-gradient-to-br from-[var(--primary-soft)] via-transparent to-[var(--gold-soft)] opacity-60 blur-xl" />
       <div className="relative overflow-hidden rounded-2xl bg-black shadow-[var(--shadow-premium)] ring-1 ring-[color-mix(in_oklab,var(--primary)_20%,transparent)]">
-        <div className="relative aspect-[9/16] sm:aspect-video">
+        <div className="relative aspect-video">
           <video
             ref={videoRef}
             src={vslVideo.url}
