@@ -10,7 +10,7 @@ import {
 import ebookCover from "@/assets/ebook-cover.png.asset.json";
 import vslVideo from "@/assets/vsl.mp4.asset.json";
 import faceBA from "@/assets/face-before-after.jpg.asset.json";
-import bodyTransform from "@/assets/body-transform.png.asset.json";
+
 import illus1 from "@/assets/illus-1.png.asset.json";
 import illus2 from "@/assets/illus-2.png.asset.json";
 import illus3 from "@/assets/illus-3.png.asset.json";
@@ -188,25 +188,28 @@ function VSLPlayer() {
 /* ---------- Sticky CTA ---------- */
 
 function StickyCTA() {
-  const [show, setShow] = useState(false);
-  useEffect(() => {
-    const onScroll = () => setShow(window.scrollY > 600);
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
-  }, []);
-  if (!show) return null;
+  const handleClick = () => {
+    try {
+      trackEvent("AddToCart", { content_name: "Sistema Feminino 14D™", currency: "BRL", value: 39.90 });
+      trackEvent("InitiateCheckout", { content_name: "Sistema Feminino 14D™", currency: "BRL", value: 39.90, num_items: 1 });
+    } catch {}
+  };
   return (
     <div className="fixed inset-x-0 bottom-0 z-40 border-t border-border bg-background/95 px-3 pb-[calc(env(safe-area-inset-bottom)+8px)] pt-2 backdrop-blur md:px-4">
-      <div className="mx-auto flex max-w-2xl items-center gap-3">
-        <div className="hidden flex-1 sm:block">
-          <p className="text-xs font-semibold text-foreground">Sistema Feminino 14D™</p>
-          <p className="text-[11px] text-muted-foreground">De <span className="line-through">R$322</span> por <strong className="text-[var(--success)]">R$39,90</strong></p>
+      <div className="mx-auto flex max-w-2xl items-center gap-2">
+        <div className="flex flex-1 flex-col leading-tight">
+          <span className="text-[10px] font-semibold uppercase tracking-wide text-muted-foreground">Sistema 14D™</span>
+          <span className="text-[13px] font-bold text-foreground">
+            <span className="line-through opacity-60">R$322</span>{" "}
+            <span className="text-[var(--success)]">R$39,90</span>
+          </span>
         </div>
         <a
           href={CHECKOUT_URL}
-          className="cta-pulse flex flex-1 items-center justify-center gap-2 rounded-xl bg-[var(--success)] px-4 py-3 text-sm font-bold text-white shadow-lg"
+          onClick={handleClick}
+          className="cta-pulse flex flex-[1.4] items-center justify-center gap-1.5 rounded-xl bg-[var(--success)] px-3 py-3 text-[13px] font-bold leading-tight text-white shadow-lg sm:text-sm"
         >
-          Quero desinchar agora <ArrowRight className="h-4 w-4" />
+          COMEÇAR AGORA <ArrowRight className="h-4 w-4" />
         </a>
       </div>
     </div>
@@ -216,12 +219,15 @@ function StickyCTA() {
 /* ---------- FAQ ---------- */
 
 const faqs = [
-  { q: "Funciona para mulheres acima dos 40?", a: "Sim. O método foi desenhado especialmente para mulheres 35+, considerando alterações hormonais, metabolismo e retenção típica dessa fase." },
-  { q: "Preciso ir à academia?", a: "Não. O protocolo é caseiro. Os rituais drenantes e os movimentos são simples e podem ser feitos em qualquer ambiente." },
-  { q: "Preciso seguir uma dieta restritiva?", a: "Não. Você recebe um cardápio desinflamatório com substituições inteligentes, sem passar fome e sem cortar grupos alimentares essenciais." },
+  { q: "Tenho mais de 50 anos. Funciona pra mim?", a: "Sim. Boa parte das participantes tem entre 45 e 60 anos. O protocolo foi desenhado considerando alterações hormonais, metabolismo mais lento e retenção típica dessa fase." },
+  { q: "Estou na menopausa. Posso fazer?", a: "Pode. O Sistema 14D™ é especialmente eficaz em mulheres na pré e pós-menopausa, justamente quando a retenção e a inflamação ficam mais intensas." },
+  { q: "Preciso cozinhar muito ou fazer dieta restritiva?", a: "Não. Cardápio com substituições inteligentes, sem passar fome e sem cortar grupos alimentares essenciais. Receitas simples, do dia a dia." },
   { q: "Quanto tempo por dia eu preciso?", a: "Em média 10 a 15 minutos por dia para aplicar os rituais e organizar a rotina anti-inchaço." },
+  { q: "Já tentei várias dietas e nada funcionou. Por que agora seria diferente?", a: "Porque o problema raramente é só dieta — é retenção + inflamação + intestino lento. O Sistema 14D™ age nos 3 fatores ao mesmo tempo, com sequência guiada dia a dia." },
+  { q: "Funciona para mulheres acima dos 40?", a: "Sim. Foi desenhado especialmente para mulheres 35+, considerando alterações hormonais e retenção típica dessa fase." },
+  { q: "Preciso ir à academia?", a: "Não. O protocolo é caseiro. Os rituais drenantes e os movimentos são simples e podem ser feitos em qualquer ambiente." },
   { q: "Como recebo o material após a compra?", a: "O acesso é liberado imediatamente por e-mail, em qualquer celular, tablet ou computador. Acesso vitalício." },
-  { q: "E se eu não tiver resultado?", a: "Você tem 7 dias de garantia incondicional. Se não sentir diferença, devolvemos 100% do valor sem perguntas." },
+  { q: "E se eu não tiver resultado?", a: "Você tem a Garantia Blindada de 7 dias. Se não sentir seu corpo mais leve, devolvemos 100% do valor sem perguntas." },
 ];
 
 function FAQItem({ q, a }: { q: string; a: string }) {
@@ -509,24 +515,24 @@ function LandingPage() {
       {/* HERO */}
       <header className="relative">
         <div className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(80%_50%_at_50%_0%,oklch(0.95_0.05_145)_0%,transparent_70%)]" />
-        <div className="mx-auto max-w-3xl px-4 pt-6 sm:pt-10">
+        <div className="mx-auto max-w-3xl px-4 pt-3 sm:pt-6">
           <div className="flex items-center justify-center gap-2">
             <Leaf className="h-5 w-5 text-primary" />
             <span className="text-sm font-semibold tracking-wide text-primary-deep">SISTEMA FEMININO 14D™</span>
           </div>
 
-          <div className="mt-5 flex flex-col items-center gap-3 text-center">
+          <div className="mt-3 flex flex-col items-center gap-2 text-center sm:mt-4 sm:gap-3">
             <Pill tone="gold">
-              <Sparkles className="h-3 w-3" /> Protocolo Feminino de Reequilíbrio Corporal · 14 dias guiados
+              <Sparkles className="h-3 w-3" /> Protocolo Feminino · 14 dias guiados
             </Pill>
-            <h1 className="text-balance text-3xl font-bold leading-[1.05] text-primary-deep sm:text-5xl">
-              Você pode estar carregando <em className="not-italic text-[var(--destructive)]">anos de retenção, inflamação e desconforto</em> sem perceber.
+            <h1 className="text-balance text-[26px] font-bold leading-[1.08] text-primary-deep sm:text-5xl">
+              Sua barriga pode estar inchada por <em className="not-italic text-[var(--destructive)]">retenção e inflamação</em> — não por gordura.
             </h1>
-            <p className="max-w-xl text-balance text-sm leading-relaxed text-muted-foreground sm:text-base">
-              Existe um <strong className="text-foreground">protocolo feminino de 14 dias</strong> criado para ajudar seu corpo a voltar ao estado de leveza natural — agindo nos 3 fatores reais do inchaço: <strong className="text-foreground">retenção, inflamação silenciosa e intestino lento</strong>.
+            <p className="max-w-xl text-balance text-[13px] leading-snug text-muted-foreground sm:text-base">
+              Descubra o <strong className="text-foreground">protocolo feminino de 14 dias</strong> que já ajudou mais de <strong className="text-foreground">12.000 mulheres</strong> a se sentirem leves novamente.
             </p>
 
-            <div className="flex flex-wrap items-center justify-center gap-3 pt-1 text-xs text-muted-foreground">
+            <div className="flex flex-wrap items-center justify-center gap-x-3 gap-y-1 pt-0.5 text-[11px] text-muted-foreground sm:text-xs">
               <span className="inline-flex items-center gap-1"><Stars /> <strong className="text-foreground">4,9</strong>/5</span>
               <span className="h-3 w-px bg-border" />
               <span><strong className="text-foreground">+12.000</strong> mulheres no protocolo 14D™</span>
@@ -534,18 +540,44 @@ function LandingPage() {
           </div>
 
           {/* VSL */}
-          <div className="mt-6 sm:mt-8">
+          <div className="mt-3 sm:mt-5">
             <VSLPlayer />
           </div>
 
-          <div className="mt-6">
-            <CTA sub="Acesso imediato · Pagamento 100% seguro">QUERO DESINCHAR EM 14 DIAS</CTA>
+          <div className="mt-4">
+            <CTA sub="Acesso imediato · Pagamento 100% seguro">QUERO ME SENTIR LEVE NOVAMENTE</CTA>
+            <p className="mt-2 text-center text-[11px] text-muted-foreground">
+              Menos de <strong className="text-foreground">R$ 2,85/dia</strong> durante o protocolo · ou <strong className="text-foreground">4x de R$11,07</strong>
+            </p>
           </div>
 
-          <div className="mt-5 flex items-center justify-center gap-4 text-[11px] text-muted-foreground">
+          <div className="mt-3 flex items-center justify-center gap-3 text-[11px] text-muted-foreground">
             <span className="inline-flex items-center gap-1"><Lock className="h-3.5 w-3.5" /> Compra segura</span>
-            <span className="inline-flex items-center gap-1"><ShieldCheck className="h-3.5 w-3.5" /> 7 dias de garantia</span>
+            <span className="inline-flex items-center gap-1"><ShieldCheck className="h-3.5 w-3.5" /> Garantia 7 dias</span>
             <span className="inline-flex items-center gap-1"><Clock className="h-3.5 w-3.5" /> Acesso imediato</span>
+          </div>
+
+          {/* Quick social proof under VSL */}
+          <div className="mt-6 grid grid-cols-1 gap-3 sm:grid-cols-2">
+            {[
+              { n: "Aline R.", age: 38, t: "Em 6 dias já notei diferença", d: "Comecei o protocolo na segunda e na sexta consegui fechar a calça que estava guardada." },
+              { n: "Patrícia M.", age: 42, t: "Sumiu o peso depois do almoço", d: "Eu vivia empachada. Hoje me sinto leve a tarde inteira." },
+            ].map((t) => (
+              <div key={t.n} className="rounded-2xl bg-card p-4 shadow-[var(--shadow-soft)] ring-1 ring-border">
+                <Stars />
+                <p className="mt-1.5 text-sm font-bold text-primary-deep">"{t.t}"</p>
+                <p className="mt-1.5 text-[13px] leading-snug text-muted-foreground">{t.d}</p>
+                <p className="mt-2 text-[11px] font-semibold text-foreground">— {t.n}, {t.age} anos · <span className="font-normal text-muted-foreground">Compra verificada</span></p>
+              </div>
+            ))}
+          </div>
+
+          <div className="mt-4 overflow-hidden rounded-2xl bg-card shadow-[var(--shadow-soft)] ring-1 ring-border">
+            <img src={faceBA.url} alt="Antes e depois — rosto desinchado" className="w-full" loading="lazy" />
+            <div className="grid grid-cols-2 border-t border-border text-center text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
+              <div className="border-r border-border py-2">Antes</div>
+              <div className="py-2 text-[var(--success)]">Depois</div>
+            </div>
           </div>
         </div>
       </header>
@@ -767,15 +799,6 @@ function LandingPage() {
           </div>
         </div>
 
-        <div className="mt-6 overflow-hidden rounded-3xl bg-card shadow-[var(--shadow-premium)] ring-1 ring-border">
-          <div className="relative">
-            <img src={bodyTransform.url} alt="Transformação corporal" className="w-full" loading="lazy" />
-          </div>
-          <div className="grid grid-cols-2 border-t border-border text-center text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-            <div className="border-r border-border py-2">Antes</div>
-            <div className="py-2 text-[var(--success)]">Depois</div>
-          </div>
-        </div>
 
         <p className="mt-3 text-center text-[11px] italic text-muted-foreground">*Resultados podem variar conforme rotina, alimentação e organismo de cada mulher.</p>
       </section>
@@ -1012,9 +1035,10 @@ function LandingPage() {
               <span className="absolute -bottom-1 rounded-full bg-[var(--primary-deep)] px-3 py-0.5 text-[10px] font-bold uppercase tracking-widest text-white">7 dias</span>
             </div>
             <div>
-              <h3 className="font-display text-2xl font-bold text-primary-deep sm:text-3xl">Experimente sem risco durante 7 dias</h3>
+              <Pill tone="gold"><ShieldCheck className="h-3 w-3" /> Garantia Blindada</Pill>
+              <h3 className="mt-2 font-display text-2xl font-bold text-primary-deep sm:text-3xl">Garantia Blindada de 7 Dias</h3>
               <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
-                Aplique o método por 7 dias. Se você não sentir <strong>menos inchaço, mais leveza e roupas servindo melhor</strong>, é só enviar um e-mail e devolvemos 100% do seu investimento. Sem perguntas. O risco é todo nosso.
+                Use o protocolo por 7 dias. Se você <strong>não sentir seu corpo mais leve</strong>, devolvemos <strong className="text-[var(--success)]">100% do seu investimento</strong>. Sem perguntas. Sem burocracia. O risco é todo nosso.
               </p>
             </div>
           </div>
@@ -1031,6 +1055,28 @@ function LandingPage() {
           {faqs.map((f) => <FAQItem key={f.q} q={f.q} a={f.a} />)}
         </div>
       </section>
+
+      {/* WHATSAPP SUPPORT */}
+      <section className="mx-auto mt-12 max-w-3xl px-4">
+        <div className="flex flex-col items-center gap-3 rounded-2xl bg-[oklch(0.97_0.05_150)] p-5 text-center shadow-[var(--shadow-soft)] ring-1 ring-[color-mix(in_oklab,var(--success)_25%,transparent)] sm:flex-row sm:text-left">
+          <div className="grid h-12 w-12 shrink-0 place-items-center rounded-full bg-[var(--success)] text-white">
+            <MessageCircle className="h-6 w-6" />
+          </div>
+          <div className="flex-1">
+            <p className="font-display text-base font-bold text-primary-deep sm:text-lg">Ainda com dúvidas?</p>
+            <p className="text-sm text-muted-foreground">Nossa equipe responde rapidinho pelo WhatsApp — antes e depois da compra.</p>
+          </div>
+          <a
+            href="https://wa.me/5511999999999?text=Ol%C3%A1!%20Tenho%20uma%20d%C3%BAvida%20sobre%20o%20Sistema%2014D%E2%84%A2"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex shrink-0 items-center gap-2 rounded-xl bg-[var(--success)] px-4 py-2.5 text-sm font-bold text-white shadow-md"
+          >
+            <MessageCircle className="h-4 w-4" /> Falar no WhatsApp
+          </a>
+        </div>
+      </section>
+
 
       {/* FINAL CTA */}
       <section className="mt-16 px-4">
