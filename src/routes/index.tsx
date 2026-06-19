@@ -289,8 +289,8 @@ function QuizPopup() {
   const [open, setOpen] = useState(false);
   const [step, setStep] = useState(0);
   const [tags, setTags] = useState<string[]>([]);
-  const [phone, setPhone] = useState("");
-  const [phoneErr, setPhoneErr] = useState("");
+  const [email, setEmail] = useState("");
+  const [emailErr, setEmailErr] = useState("");
   const [done, setDone] = useState(false);
 
   useEffect(() => {
@@ -331,27 +331,21 @@ function QuizPopup() {
     return Object.entries(c).sort((a, b) => b[1] - a[1])[0]?.[0] || "retencao";
   })();
 
-  const submitPhone = (e: React.FormEvent) => {
+  const submitEmail = (e: React.FormEvent) => {
     e.preventDefault();
-    const digits = phone.replace(/\D/g, "");
-    if (digits.length < 10 || digits.length > 13) {
-      setPhoneErr("Digite um WhatsApp válido com DDD.");
+    const trimmed = email.trim().toLowerCase();
+    const valid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmed);
+    if (!valid) {
+      setEmailErr("Digite um e-mail válido.");
       return;
     }
-    setPhoneErr("");
+    setEmailErr("");
     try {
-      localStorage.setItem("mai_lead", JSON.stringify({ phone: digits, type: dominant, ts: Date.now() }));
+      localStorage.setItem("mai_lead", JSON.stringify({ email: trimmed, type: dominant, ts: Date.now() }));
       trackEvent("Lead", { content_name: "Quiz Anti-Inchaço", content_category: dominant });
     } catch {}
     sessionStorage.setItem(QUIZ_KEY, "1");
     setDone(true);
-  };
-
-  const formatPhone = (v: string) => {
-    const d = v.replace(/\D/g, "").slice(0, 11);
-    if (d.length <= 2) return d;
-    if (d.length <= 7) return `(${d.slice(0, 2)}) ${d.slice(2)}`;
-    return `(${d.slice(0, 2)}) ${d.slice(2, 7)}-${d.slice(7)}`;
   };
 
   if (!open) return null;
