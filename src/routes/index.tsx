@@ -254,14 +254,14 @@ function LandingPage() {
   }, []);
   return (
     <div className="min-h-screen overflow-x-hidden bg-background pb-24 text-foreground">
-      {/* URGENCY BANNER */}
-      <div className="bg-[var(--destructive)] text-white">
-        <div className="mx-auto flex max-w-3xl items-center justify-center gap-2 px-4 py-1.5 text-center text-[11px] font-semibold tracking-wide sm:text-xs">
+      {/* URGENCY BANNER (sticky) */}
+      <div className="sticky top-0 z-30 bg-[var(--destructive)] text-white shadow-md">
+        <div className="mx-auto flex max-w-3xl items-center justify-center gap-2 px-3 py-1.5 text-center text-[10.5px] font-semibold leading-tight tracking-wide sm:text-xs">
           <span className="relative flex h-2 w-2 shrink-0">
             <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-white/70" />
             <span className="relative inline-flex h-2 w-2 rounded-full bg-white" />
           </span>
-          <span><strong>191 mulheres</strong> iniciaram o protocolo hoje · vagas promocionais podem encerrar sem aviso</span>
+          <span><strong>191 mulheres</strong> iniciaram hoje · últimas vagas promocionais</span>
         </div>
       </div>
 
