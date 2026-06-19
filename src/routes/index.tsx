@@ -696,10 +696,10 @@ function LandingPage() {
       <section id="oferta" className="mt-20 px-4">
         <div className="mx-auto max-w-3xl">
           <div className="text-center">
-            <Pill tone="gold"><Sparkles className="h-3 w-3" /> Sistema completo · Liberação imediata</Pill>
-            <h2 className="mt-3 text-balance text-2xl font-bold text-primary-deep sm:text-4xl">Seu Sistema Completo Anti-Inchaço Feminino</h2>
+            <Pill tone="gold"><Sparkles className="h-3 w-3" /> Sistema 14D™ · Liberação imediata</Pill>
+            <h2 className="mt-3 text-balance text-2xl font-bold text-primary-deep sm:text-4xl">Protocolo Feminino de Reequilíbrio Corporal 14D™</h2>
             <p className="mx-auto mt-3 max-w-xl text-sm leading-relaxed text-muted-foreground sm:text-base">
-              Você não está adquirindo apenas um ebook. Está recebendo um <strong className="text-foreground">método completo, guiado e estruturado</strong>, criado para ajudar mulheres a reduzir o inchaço, recuperar a leveza e voltar a se sentir bem com o próprio corpo.
+              Você não está adquirindo apenas um ebook. Está entrando em um <strong className="text-foreground">sistema feminino completo, guiado dia a dia</strong>, criado para reorganizar seu corpo em 14 dias — agindo na retenção, na inflamação e no intestino.
             </p>
           </div>
 
