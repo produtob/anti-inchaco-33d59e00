@@ -1,4 +1,4 @@
 - name: 'notify vercel'
   uses: 'vercel/repository-dispatch/actions/status@v1'
   with:
-    name: Vercel - anti-inchaco: lint
+    name: Vercel - anti-inchaco: .github/workflows/vercel
