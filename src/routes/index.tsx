@@ -1,0 +1,1108 @@
+import { createFileRoute } from "@tanstack/react-router";
+import { useEffect, useRef, useState } from "react";
+import {
+  Leaf, Droplets, Check, Star, ShieldCheck, Lock, Clock,
+  Sparkles, Heart, ArrowRight, Volume2, VolumeX, ChevronDown, X,
+  Utensils, Activity, TrendingDown, AlertTriangle, Gift,
+  Mail,
+} from "lucide-react";
+import { trackEvent } from "@/lib/meta-pixel";
+
+// Asset URLs — hosted on Lovable CDN (public, works on any hosting)
+const BASE = "https://a675c091-4e46-469d-a50b-b16c783b10f8.lovableproject.com";
+const ASSETS = {
+  ebookCover:    `${BASE}/lovable-uploads/ebook-cover.png`,
+  vslVideo:      `${BASE}/lovable-uploads/vsl.mp4`,
+  faceBA:        `${BASE}/lovable-uploads/face-before-after.jpg`,
+  bodyTransform: `${BASE}/lovable-uploads/body-transform.png`,
+  clickToHear:   `${BASE}/lovable-uploads/click-to-hear.jpg`,
+  illus1:        `${BASE}/lovable-uploads/illus-1.png`,
+  illus2:        `${BASE}/lovable-uploads/illus-2.png`,
+  illus3:        `${BASE}/lovable-uploads/illus-3.png`,
+  illus4:        `${BASE}/lovable-uploads/illus-4.png`,
+};
+
+const CHECKOUT_URL = "https://pay.cakto.com.br/3a9ynm4_396700";
+
+
+export const Route = createFileRoute("/")({
+  component: LandingPage,
+});
+
+/* ---------- Building blocks ---------- */
+
+function Pill({ children, tone = "primary" }: { children: React.ReactNode; tone?: "primary" | "gold" }) {
+  const cls = tone === "gold"
+    ? "bg-[oklch(0.97_0.04_85)] text-[oklch(0.45_0.1_75)] ring-1 ring-[var(--gold-soft)]"
+    : "bg-primary-soft text-primary-deep ring-1 ring-[color-mix(in_oklab,var(--primary)_25%,transparent)]";
+  return (
+    <span className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-[11px] font-semibold uppercase tracking-wider ${cls}`}>
+      {children}
+    </span>
+  );
+}
+
+function CTA({ children, href = CHECKOUT_URL, pulse = true, sub }: { children: React.ReactNode; href?: string; pulse?: boolean; sub?: string }) {
+  const handleClick = () => {
+    trackEvent("AddToCart", { content_name: "Método Anti-Inchaço Feminino", currency: "BRL", value: 39.90 });
+    trackEvent("InitiateCheckout", { content_name: "Método Anti-Inchaço Feminino", currency: "BRL", value: 39.90, num_items: 1 });
+  };
+  return (
+    <div className="flex w-full flex-col items-center">
+      <a
+        href={href}
+        onClick={handleClick}
+        className={`group relative flex w-full max-w-md items-center justify-center gap-2 rounded-2xl bg-[var(--success)] px-6 py-4 text-center text-base font-bold text-white shadow-[var(--shadow-premium)] transition-transform active:scale-[0.98] sm:py-5 sm:text-lg ${pulse ? "cta-pulse" : ""}`}
+      >
+        <span className="leading-tight">{children}</span>
+        <ArrowRight className="h-5 w-5 transition-transform group-hover:translate-x-1" />
+      </a>
+      {sub && <p className="mt-2 text-xs text-muted-foreground">{sub}</p>}
+    </div>
+  );
+}
+
+function Stars({ n = 5 }: { n?: number }) {
+  return (
+    <div className="flex">
+      {Array.from({ length: n }).map((_, i) => (
+        <Star key={i} className="h-4 w-4 fill-[var(--gold)] text-[var(--gold)]" />
+      ))}
+    </div>
+  );
+}
+
+/* ---------- VSL Player ---------- */
+
+function VSLPlayer() {
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const [muted, setMuted] = useState(true);
+  const [started, setStarted] = useState(false);
+  const [showHint, setShowHint] = useState(true);
+
+  useEffect(() => {
+    const v = videoRef.current;
+    if (!v) return;
+    v.muted = true;
+    const p = v.play();
+    if (p && typeof p.then === "function") p.catch(() => {});
+  }, []);
+
+  const unmute = () => {
+    const v = videoRef.current;
+    if (!v) return;
+    v.muted = false;
+    v.volume = 1;
+    setMuted(false);
+    setStarted(true);
+    setShowHint(false);
+    v.play().catch(() => {
+      setMuted(true);
+      v.muted = true;
+      setShowHint(true);
+    });
+  };
+
+  return (
+    <div className="relative mx-auto w-full max-w-2xl">
+      <div className="absolute -inset-2 rounded-3xl bg-gradient-to-br from-[var(--primary-soft)] via-transparent to-[var(--gold-soft)] opacity-60 blur-xl" />
+      <div className="relative overflow-hidden rounded-2xl bg-black shadow-[var(--shadow-premium)] ring-1 ring-[color-mix(in_oklab,var(--primary)_20%,transparent)]">
+        <div className="relative aspect-video">
+          <video
+            ref={videoRef}
+            src={ASSETS.vslVideo}
+            poster={ASSETS.clickToHear}
+            playsInline
+            autoPlay
+            loop
+            muted
+            preload="none"
+            width={1920}
+            height={1080}
+            className="absolute inset-0 h-full w-full object-cover"
+            onClick={() => muted && unmute()}
+          />
+
+          {muted && (
+            <button
+              onClick={unmute}
+              aria-label="Ativar som do vídeo"
+              className="absolute inset-0 z-10 flex flex-col items-center justify-center bg-black/35 backdrop-blur-[1px] transition hover:bg-black/40"
+            >
+              <div className="fade-up flex flex-col items-center gap-3 rounded-2xl bg-[oklch(0.98_0.01_30)] px-6 py-5 text-center shadow-2xl ring-1 ring-black/10">
+                <div className="relative">
+                  <div className="absolute inset-0 -m-2 animate-ping rounded-full bg-[var(--destructive)]/40" />
+                  <div className="relative grid h-14 w-14 place-items-center rounded-full bg-[var(--destructive)] text-white shadow-lg">
+                    <VolumeX className="h-7 w-7" />
+                  </div>
+                </div>
+                <div>
+                  <p className="text-sm font-bold uppercase tracking-wide text-[var(--destructive)]">Seu vídeo já começou</p>
+                  <p className="mt-0.5 text-base font-extrabold text-foreground">Toque para ouvir o áudio</p>
+                </div>
+              </div>
+            </button>
+          )}
+
+          {started && !muted && (
+            <button
+              onClick={() => { const v = videoRef.current; if (v) { v.muted = true; setMuted(true); } }}
+              className="absolute bottom-3 right-3 z-10 grid h-10 w-10 place-items-center rounded-full bg-black/60 text-white backdrop-blur"
+              aria-label="Silenciar"
+            >
+              <Volume2 className="h-5 w-5" />
+            </button>
+          )}
+        </div>
+      </div>
+      {showHint && !muted && (
+        <p className="mt-2 text-center text-xs text-muted-foreground">Se não houver áudio, toque novamente para ativar o som.</p>
+      )}
+    </div>
+  );
+}
+
+/* ---------- Sticky CTA ---------- */
+
+function StickyCTA() {
+  const handleClick = () => {
+    try {
+      trackEvent("AddToCart", { content_name: "Sistema Feminino 14D™", currency: "BRL", value: 39.90 });
+      trackEvent("InitiateCheckout", { content_name: "Sistema Feminino 14D™", currency: "BRL", value: 39.90, num_items: 1 });
+    } catch {}
+  };
+  return (
+    <div className="fixed inset-x-0 bottom-0 z-40 border-t border-border bg-background/95 px-3 pb-[calc(env(safe-area-inset-bottom)+8px)] pt-2 backdrop-blur md:px-4">
+      <div className="mx-auto flex max-w-2xl items-center gap-2">
+        <div className="flex flex-1 flex-col leading-tight">
+          <span className="text-[10px] font-semibold uppercase tracking-wide text-muted-foreground">Sistema 14D™</span>
+          <span className="text-[13px] font-bold text-foreground">
+            <span className="line-through opacity-60">R$322</span>{" "}
+            <span className="text-[var(--success)]">R$39,90</span>
+          </span>
+        </div>
+        <a
+          href={CHECKOUT_URL}
+          onClick={handleClick}
+          className="cta-pulse flex flex-[1.4] items-center justify-center gap-1.5 rounded-xl bg-[var(--success)] px-3 py-3 text-[13px] font-bold leading-tight text-white shadow-lg sm:text-sm"
+        >
+          COMEÇAR AGORA <ArrowRight className="h-4 w-4" />
+        </a>
+      </div>
+    </div>
+  );
+}
+
+/* ---------- FAQ ---------- */
+
+const faqs = [
+  { q: "Tenho mais de 50 anos. Funciona pra mim?", a: "Sim. Boa parte das participantes tem entre 45 e 60 anos. O protocolo foi desenhado considerando alterações hormonais, metabolismo mais lento e retenção típica dessa fase." },
+  { q: "Estou na menopausa. Posso fazer?", a: "Pode. O Sistema 14D™ é especialmente eficaz em mulheres na pré e pós-menopausa, justamente quando a retenção e a inflamação ficam mais intensas." },
+  { q: "Preciso cozinhar muito ou fazer dieta restritiva?", a: "Não. Cardápio com substituições inteligentes, sem passar fome e sem cortar grupos alimentares essenciais. Receitas simples, do dia a dia." },
+  { q: "Quanto tempo por dia eu preciso?", a: "Em média 10 a 15 minutos por dia para aplicar os rituais e organizar a rotina anti-inchaço." },
+  { q: "Já tentei várias dietas e nada funcionou. Por que agora seria diferente?", a: "Porque o problema raramente é só dieta — é retenção + inflamação + intestino lento. O Sistema 14D™ age nos 3 fatores ao mesmo tempo, com sequência guiada dia a dia." },
+  { q: "Funciona para mulheres acima dos 40?", a: "Sim. Foi desenhado especialmente para mulheres 35+, considerando alterações hormonais e retenção típica dessa fase." },
+  { q: "Preciso ir à academia?", a: "Não. O protocolo é caseiro. Os rituais drenantes e os movimentos são simples e podem ser feitos em qualquer ambiente." },
+  { q: "Como recebo o material após a compra?", a: "O acesso é liberado imediatamente por e-mail, em qualquer celular, tablet ou computador. Acesso vitalício." },
+  { q: "E se eu não tiver resultado?", a: "Você tem a Garantia Blindada de 7 dias. Se não sentir seu corpo mais leve, devolvemos 100% do valor sem perguntas." },
+];
+
+function FAQItem({ q, a }: { q: string; a: string }) {
+  const [open, setOpen] = useState(false);
+  return (
+    <div className="rounded-2xl bg-card shadow-[var(--shadow-soft)] ring-1 ring-border">
+      <button
+        onClick={() => setOpen(!open)}
+        className="flex w-full items-center justify-between gap-3 px-5 py-4 text-left"
+      >
+        <span className="text-sm font-semibold text-foreground sm:text-base">{q}</span>
+        <ChevronDown className={`h-5 w-5 shrink-0 text-primary transition-transform ${open ? "rotate-180" : ""}`} />
+      </button>
+      {open && <p className="px-5 pb-5 text-sm leading-relaxed text-muted-foreground">{a}</p>}
+    </div>
+  );
+}
+
+/* ---------- Quiz Popup (lead capture) ---------- */
+
+const QUIZ_KEY = "mai_quiz_seen_v1";
+const QUIZ_QUESTIONS = [
+  {
+    q: "Em que momento do dia você sente MAIS inchaço?",
+    options: [
+      { v: "tarde", t: "Da tarde em diante", tag: "retencao" },
+      { v: "refeicao", t: "Logo após as refeições", tag: "inflamacao" },
+      { v: "manha", t: "Acordo já estufada", tag: "intestino" },
+    ],
+  },
+  {
+    q: "O que você sente com mais frequência?",
+    options: [
+      { v: "pernas", t: "Pernas pesadas / anel marcando", tag: "retencao" },
+      { v: "gases", t: "Gases e empachamento", tag: "inflamacao" },
+      { v: "preso", t: "Intestino preso ou irregular", tag: "intestino" },
+    ],
+  },
+  {
+    q: "Sua roupa aperta mais quando?",
+    options: [
+      { v: "tpm", t: "Perto do ciclo / TPM", tag: "retencao" },
+      { v: "comer", t: "Depois de comer", tag: "inflamacao" },
+      { v: "sempre", t: "Quase todo dia", tag: "intestino" },
+    ],
+  },
+];
+
+const QUIZ_RESULTS: Record<string, { title: string; desc: string }> = {
+  retencao: {
+    title: "Tipo 1 — Inchaço por Retenção Hídrica",
+    desc: "Seu corpo está segurando líquido nos tecidos. O Protocolo 14D™ age direto na drenagem e no equilíbrio hormonal feminino.",
+  },
+  inflamacao: {
+    title: "Tipo 2 — Inchaço Inflamatório",
+    desc: "Alimentos pró-inflamatórios estão mantendo seu abdômen distendido. O cardápio desinflamatório do Sistema 14D™ corrige isso.",
+  },
+  intestino: {
+    title: "Tipo 3 — Inchaço por Intestino Lento",
+    desc: "Seu trânsito intestinal está travado. O Guia do Intestino Funcional do Sistema 14D™ destrava em poucos dias.",
+  },
+};
+
+function QuizPopup() {
+  const [open, setOpen] = useState(false);
+  const [step, setStep] = useState(0);
+  const [tags, setTags] = useState<string[]>([]);
+  const [email, setEmail] = useState("");
+  const [emailErr, setEmailErr] = useState("");
+  const [done, setDone] = useState(false);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    if (sessionStorage.getItem(QUIZ_KEY)) return;
+    const onLeave = (e: MouseEvent) => {
+      if (e.clientY <= 0 && !sessionStorage.getItem(QUIZ_KEY)) setOpen(true);
+    };
+    document.addEventListener("mouseleave", onLeave);
+    return () => { document.removeEventListener("mouseleave", onLeave); };
+  }, []);
+
+  useEffect(() => {
+    if (open) {
+      document.body.style.overflow = "hidden";
+      try { trackEvent("ViewContent", { content_name: "Quiz Anti-Inchaço" }); } catch {}
+    } else {
+      document.body.style.overflow = "";
+    }
+    return () => { document.body.style.overflow = ""; };
+  }, [open]);
+
+  const close = () => {
+    sessionStorage.setItem(QUIZ_KEY, "1");
+    setOpen(false);
+  };
+
+  const pick = (tag: string) => {
+    const next = [...tags, tag];
+    setTags(next);
+    if (step < QUIZ_QUESTIONS.length - 1) setStep(step + 1);
+    else setStep(QUIZ_QUESTIONS.length); // move to capture
+  };
+
+  const dominant = (() => {
+    const c: Record<string, number> = {};
+    tags.forEach((t) => (c[t] = (c[t] || 0) + 1));
+    return Object.entries(c).sort((a, b) => b[1] - a[1])[0]?.[0] || "retencao";
+  })();
+
+  const submitEmail = (e: React.FormEvent) => {
+    e.preventDefault();
+    const trimmed = email.trim().toLowerCase();
+    const valid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmed);
+    if (!valid) {
+      setEmailErr("Digite um e-mail válido.");
+      return;
+    }
+    setEmailErr("");
+    try {
+      localStorage.setItem("mai_lead", JSON.stringify({ email: trimmed, type: dominant, ts: Date.now() }));
+      trackEvent("Lead", { content_name: "Quiz Anti-Inchaço", content_category: dominant });
+    } catch {}
+    sessionStorage.setItem(QUIZ_KEY, "1");
+    setDone(true);
+  };
+
+  if (!open) return null;
+
+  const result = QUIZ_RESULTS[dominant];
+  const totalSteps = QUIZ_QUESTIONS.length + 1;
+  const currentStep = Math.min(step, QUIZ_QUESTIONS.length);
+  const progress = done ? 100 : ((currentStep) / totalSteps) * 100;
+
+  return (
+    <div className="fixed inset-x-0 bottom-0 z-[60] flex items-end justify-center px-3 pb-3 pointer-events-none sm:inset-0 sm:items-end sm:justify-end sm:p-6">
+      <div className="relative w-full max-w-md overflow-hidden rounded-2xl bg-card shadow-[var(--shadow-premium)] ring-1 ring-border pointer-events-auto animate-in slide-in-from-bottom-8 fade-in duration-300">
+        <button
+          onClick={close}
+          aria-label="Fechar"
+          className="absolute right-2 top-2 z-10 grid h-8 w-8 place-items-center rounded-full bg-background/80 text-muted-foreground ring-1 ring-border hover:text-foreground"
+        >
+          <X className="h-4 w-4" />
+        </button>
+
+        <div className="h-1 w-full bg-border">
+          <div className="h-full bg-[var(--success)] transition-all" style={{ width: `${progress}%` }} />
+        </div>
+
+        {!done && step < QUIZ_QUESTIONS.length && (
+          <div className="p-5 sm:p-6">
+            <div className="flex items-center justify-center gap-1.5">
+              <Pill tone="gold"><AlertTriangle className="h-3 w-3" /> ESPERE! Não vá ainda...</Pill>
+            </div>
+            <h3 className="mt-3 text-center font-display text-lg font-bold leading-tight text-primary-deep sm:text-xl">
+              Faça o diagnóstico gratuito e descubra qual dos <span className="text-[var(--destructive)]">3 tipos de inchaço</span> está travando seu corpo
+            </h3>
+            <p className="mt-1 text-center text-xs text-muted-foreground">Pergunta {step + 1} de {QUIZ_QUESTIONS.length}</p>
+
+            <p className="mt-4 text-sm font-semibold text-foreground sm:text-base">{QUIZ_QUESTIONS[step].q}</p>
+            <div className="mt-3 space-y-2">
+              {QUIZ_QUESTIONS[step].options.map((o) => (
+                <button
+                  key={o.v}
+                  onClick={() => pick(o.tag)}
+                  className="flex w-full items-center justify-between gap-3 rounded-xl border-2 border-border bg-background px-4 py-3 text-left text-sm font-medium text-foreground transition active:scale-[0.99] hover:border-primary hover:bg-[var(--primary-soft)]"
+                >
+                  <span>{o.t}</span>
+                  <ArrowRight className="h-4 w-4 shrink-0 text-primary" />
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {!done && step >= QUIZ_QUESTIONS.length && (
+          <div className="p-5 sm:p-6">
+            <div className="flex items-center justify-center">
+              <Pill><Mail className="h-3 w-3" /> Último passo</Pill>
+            </div>
+            <h3 className="mt-3 text-center font-display text-lg font-bold leading-tight text-primary-deep sm:text-xl">
+              Pronto! Diagnosticamos o seu caso.
+            </h3>
+            <p className="mt-2 text-center text-sm text-muted-foreground">
+              A resposta exata de como reverter o seu inchaço está a um passo. Digite seu e-mail para receber seu <strong className="text-foreground">diagnóstico completo</strong> e uma <strong className="text-[var(--success)]">oferta de resgate exclusiva</strong> do Sistema 14D™.
+            </p>
+            <form onSubmit={submitEmail} className="mt-4 space-y-3">
+              <div>
+                <label htmlFor="email" className="text-xs font-semibold text-foreground">Seu e-mail</label>
+                <input
+                  id="email"
+                  type="email"
+                  inputMode="email"
+                  autoComplete="email"
+                  placeholder="seu@email.com"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className="mt-1 w-full rounded-xl border-2 border-border bg-background px-4 py-3 text-base font-medium text-foreground outline-none ring-0 focus:border-primary"
+                  required
+                />
+                {emailErr && <p className="mt-1 text-xs text-[var(--destructive)]">{emailErr}</p>}
+              </div>
+              <button
+                type="submit"
+                className="cta-pulse flex w-full items-center justify-center gap-2 rounded-xl bg-[var(--success)] px-5 py-3.5 text-sm font-bold text-white shadow-[var(--shadow-premium)]"
+              >
+                Ver meu resultado <ArrowRight className="h-4 w-4" />
+              </button>
+              <p className="text-center text-[10px] text-muted-foreground">Seus dados estão seguros · Sem spam</p>
+            </form>
+          </div>
+        )}
+
+        {done && (
+          <div className="p-5 sm:p-6">
+            <div className="flex items-center justify-center">
+              <Pill tone="gold"><Sparkles className="h-3 w-3" /> Resultado pronto</Pill>
+            </div>
+            <h3 className="mt-3 text-center font-display text-xl font-bold leading-tight text-primary-deep">
+              {result.title}
+            </h3>
+            <p className="mt-2 text-center text-sm leading-relaxed text-muted-foreground">{result.desc}</p>
+            <div className="mt-4 rounded-xl bg-[var(--primary-soft)] p-3 text-center text-xs text-primary-deep ring-1 ring-[color-mix(in_oklab,var(--primary)_25%,transparent)]">
+              👉 Aplicar o protocolo agora com <strong>50% OFF</strong> — apenas <strong className="text-[var(--success)]">R$ 39,90</strong>
+            </div>
+            <a
+              href={CHECKOUT_URL}
+              onClick={() => {
+                trackEvent("AddToCart", { content_name: "Método Anti-Inchaço Feminino", currency: "BRL", value: 39.90 });
+                trackEvent("InitiateCheckout", { content_name: "Método Anti-Inchaço Feminino", currency: "BRL", value: 39.90, num_items: 1 });
+              }}
+              className="cta-pulse mt-3 flex w-full items-center justify-center gap-2 rounded-xl bg-[var(--success)] px-5 py-3.5 text-sm font-bold text-white shadow-[var(--shadow-premium)]"
+            >
+              Quero começar meu protocolo <ArrowRight className="h-4 w-4" />
+            </a>
+            <button onClick={close} className="mt-2 w-full text-center text-[11px] text-muted-foreground underline">
+              Continuar lendo a página
+            </button>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+/* ---------- Page ---------- */
+
+function LandingPage() {
+  useEffect(() => {
+    trackEvent("ViewContent", {
+      content_name: "Método Anti-Inchaço Feminino",
+      content_category: "Ebook / Programa",
+      content_ids: ["metodo-anti-inchaco-feminino"],
+      content_type: "product",
+      currency: "BRL",
+      value: 39.90,
+    });
+  }, []);
+  return (
+    <div className="min-h-screen overflow-x-hidden bg-background pb-24 text-foreground">
+      {/* URGENCY BANNER (sticky) */}
+      <div className="sticky top-0 z-30 bg-[var(--destructive)] text-white shadow-md">
+        <div className="mx-auto flex max-w-3xl items-center justify-center gap-2 px-3 py-1.5 text-center text-[10.5px] font-semibold leading-tight tracking-wide sm:text-xs">
+          <span className="relative flex h-2 w-2 shrink-0">
+            <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-white/70" />
+            <span className="relative inline-flex h-2 w-2 rounded-full bg-white" />
+          </span>
+          <span><strong>191 mulheres</strong> iniciaram hoje · últimas vagas promocionais</span>
+        </div>
+      </div>
+
+      {/* Top trust bar */}
+      <div className="bg-[var(--primary-deep)] text-white">
+        <div className="mx-auto flex max-w-3xl flex-wrap items-center justify-center gap-x-4 gap-y-1 px-4 py-2 text-[11px] font-medium tracking-wide sm:text-xs">
+          <span className="inline-flex items-center gap-1"><Star className="h-3.5 w-3.5 fill-[var(--gold)] text-[var(--gold)]" /> <strong>4,9/5</strong></span>
+          <span className="hidden h-3 w-px bg-white/30 sm:inline-block" />
+          <span className="inline-flex items-center gap-1"><Sparkles className="h-3.5 w-3.5 text-[var(--gold-soft)]" /> <strong>+12.000</strong> mulheres no protocolo</span>
+          <span className="hidden h-3 w-px bg-white/30 sm:inline-block" />
+          <span className="inline-flex items-center gap-1"><ShieldCheck className="h-3.5 w-3.5 text-[var(--gold-soft)]" /> Garantia 7 dias</span>
+          <span className="hidden h-3 w-px bg-white/30 sm:inline-block" />
+          <span className="inline-flex items-center gap-1"><Clock className="h-3.5 w-3.5 text-[var(--gold-soft)]" /> Acesso imediato</span>
+        </div>
+      </div>
+
+      <main id="main">
+      {/* HERO */}
+      <header className="relative">
+        <div className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(80%_50%_at_50%_0%,oklch(0.95_0.05_145)_0%,transparent_70%)]" />
+        <div className="mx-auto max-w-3xl px-4 pt-3 sm:pt-6">
+          <div className="flex items-center justify-center gap-2">
+            <Leaf className="h-5 w-5 text-primary" />
+            <span className="text-sm font-semibold tracking-wide text-primary-deep">SISTEMA FEMININO 14D™</span>
+          </div>
+
+          <div className="mt-3 flex flex-col items-center gap-2 text-center sm:mt-4 sm:gap-3">
+            <Pill tone="gold">
+              <Sparkles className="h-3 w-3" /> Protocolo Feminino · 14 dias guiados
+            </Pill>
+            <h1 className="text-balance text-[26px] font-bold leading-[1.08] text-primary-deep sm:text-5xl">
+              Sua barriga pode estar inchada por <em className="not-italic text-[var(--destructive)]">retenção e inflamação</em> — não por gordura.
+            </h1>
+            <p className="max-w-xl text-balance text-[13px] leading-snug text-muted-foreground sm:text-base">
+              Descubra o <strong className="text-foreground">protocolo feminino de 14 dias</strong> que já ajudou mais de <strong className="text-foreground">12.000 mulheres</strong> a se sentirem leves novamente.
+            </p>
+
+            <div className="flex flex-wrap items-center justify-center gap-x-3 gap-y-1 pt-0.5 text-[11px] text-muted-foreground sm:text-xs">
+              <span className="inline-flex items-center gap-1"><Stars /> <strong className="text-foreground">4,9</strong>/5</span>
+              <span className="h-3 w-px bg-border" />
+              <span><strong className="text-foreground">+12.000</strong> mulheres no protocolo 14D™</span>
+            </div>
+          </div>
+
+          {/* VSL */}
+          <div className="mt-3 sm:mt-5">
+            <VSLPlayer />
+          </div>
+
+          <div className="mt-4">
+            <CTA sub="Acesso imediato · Pagamento 100% seguro">QUERO ME SENTIR LEVE NOVAMENTE</CTA>
+            <p className="mt-2 text-center text-[11px] text-muted-foreground">
+              Menos de <strong className="text-foreground">R$ 2,85/dia</strong> durante o protocolo · ou <strong className="text-foreground">4x de R$11,07</strong>
+            </p>
+          </div>
+
+          <div className="mt-3 flex items-center justify-center gap-3 text-[11px] text-muted-foreground">
+            <span className="inline-flex items-center gap-1"><Lock className="h-3.5 w-3.5" /> Compra segura</span>
+            <span className="inline-flex items-center gap-1"><ShieldCheck className="h-3.5 w-3.5" /> Garantia 7 dias</span>
+            <span className="inline-flex items-center gap-1"><Clock className="h-3.5 w-3.5" /> Acesso imediato</span>
+          </div>
+
+          {/* Quick social proof under VSL */}
+          <div className="mt-6 grid grid-cols-1 gap-3 sm:grid-cols-2">
+            {[
+              { n: "Aline R.", age: 38, t: "Em 6 dias já notei diferença", d: "Comecei o protocolo na segunda e na sexta consegui fechar a calça que estava guardada." },
+              { n: "Patrícia M.", age: 42, t: "Sumiu o peso depois do almoço", d: "Eu vivia empachada. Hoje me sinto leve a tarde inteira." },
+            ].map((t) => (
+              <div key={t.n} className="rounded-2xl bg-card p-4 shadow-[var(--shadow-soft)] ring-1 ring-border">
+                <Stars />
+                <p className="mt-1.5 text-sm font-bold text-primary-deep">"{t.t}"</p>
+                <p className="mt-1.5 text-[13px] leading-snug text-muted-foreground">{t.d}</p>
+                <p className="mt-2 text-[11px] font-semibold text-foreground">— {t.n}, {t.age} anos · <span className="font-normal text-muted-foreground">Compra verificada</span></p>
+              </div>
+            ))}
+          </div>
+
+          <div className="mt-4 overflow-hidden rounded-2xl bg-card shadow-[var(--shadow-soft)] ring-1 ring-border">
+            <img src={ASSETS.faceBA} alt="Antes e depois — rosto desinchado" className="w-full object-cover" loading="eager" fetchpriority="high" width={800} height={400} />
+            <div className="grid grid-cols-2 border-t border-border text-center text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
+              <div className="border-r border-border py-2">Antes</div>
+              <div className="py-2 text-[var(--success)]">Depois</div>
+            </div>
+          </div>
+          
+          <div className="mt-4 overflow-hidden rounded-2xl bg-card shadow-[var(--shadow-soft)] ring-1 ring-border">
+            <img src={ASSETS.bodyTransform} alt="Antes e depois — corpo desinchado" className="w-full object-cover" loading="lazy" width={800} height={800} />
+            <div className="grid grid-cols-2 border-t border-border text-center text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
+              <div className="border-r border-border py-2">Antes</div>
+              <div className="py-2 text-[var(--success)]">Depois</div>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      {/* DOR */}
+      <section className="mx-auto mt-16 max-w-3xl px-4">
+        <div className="text-center">
+          <Pill><AlertTriangle className="h-3 w-3" /> Você se reconhece?</Pill>
+          <h2 className="mt-3 text-2xl font-bold text-primary-deep sm:text-4xl">Não é só uma fase. É o seu corpo pedindo ajuda.</h2>
+        </div>
+        <div className="mt-8 grid grid-cols-1 gap-3 sm:grid-cols-2">
+          {[
+            { i: <Droplets className="h-5 w-5" />, t: "Barriga inchada todos os dias", d: "Acorda bem e à tarde parece que engoliu uma bola." },
+            { i: <X className="h-5 w-5" />, t: "Roupas apertando do nada", d: "Calças que serviam semana passada já marcam." },
+            { i: <Activity className="h-5 w-5" />, t: "Retenção de líquidos constante", d: "Pernas pesadas, anel marcando, rosto inchado." },
+            { i: <Heart className="h-5 w-5" />, t: "Autoestima abalada", d: "Evita espelho, foto e roupas mais ajustadas." },
+            { i: <TrendingDown className="h-5 w-5" />, t: "Difícil emagrecer após os 35", d: "O que funcionava antes simplesmente parou." },
+            { i: <Utensils className="h-5 w-5" />, t: "Intestino lento e desconforto", d: "Sensação de empachamento, gases e desânimo." },
+          ].map((c) => (
+            <div key={c.t} className="flex gap-3 rounded-2xl bg-card p-4 shadow-[var(--shadow-soft)] ring-1 ring-border">
+              <div className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-[oklch(0.96_0.04_30)] text-[var(--destructive)]">
+                {c.i}
+              </div>
+              <div className="min-w-0">
+                <p className="text-sm font-bold text-foreground">{c.t}</p>
+                <p className="mt-0.5 text-sm text-muted-foreground">{c.d}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* IDENTIFICAÇÃO */}
+      <section className="mx-auto mt-16 max-w-3xl px-4">
+        <div className="rounded-3xl bg-[var(--primary-soft)] p-6 text-center shadow-[var(--shadow-soft)] ring-1 ring-[color-mix(in_oklab,var(--primary)_18%,transparent)] sm:p-8">
+          <Pill><Heart className="h-3 w-3" /> Você não está sozinha</Pill>
+          <h2 className="mt-3 font-display text-2xl font-bold text-primary-deep sm:text-3xl">
+            Você não é a única que passa por isso.
+          </h2>
+          <p className="mx-auto mt-3 max-w-xl text-sm leading-relaxed text-foreground/80 sm:text-base">
+            Milhares de mulheres convivem diariamente com <strong className="text-foreground">barriga estufada, retenção de líquidos e desconforto</strong> sem entender a verdadeira causa — e sem nenhum método feminino real para corrigir.
+          </p>
+        </div>
+      </section>
+
+      {/* MECANISMO */}
+      <section className="mx-auto mt-20 max-w-3xl px-4">
+        <div className="text-center">
+          <Pill>O verdadeiro inimigo</Pill>
+          <h2 className="mt-3 text-balance text-2xl font-bold text-primary-deep sm:text-4xl">
+            O problema não é apenas gordura.
+          </h2>
+          <p className="mx-auto mt-3 max-w-xl text-sm text-muted-foreground sm:text-base">
+            Estudos mostram que <strong className="text-foreground">retenção hídrica, inflamação silenciosa e intestino lento</strong> são os 3 gatilhos que mantêm o abdômen inchado — independente da balança.
+          </p>
+        </div>
+
+        <div className="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-3">
+          {[
+            { img: ASSETS.illus1, t: "Retenção hídrica", d: "Hormônios e sódio fazem o corpo segurar líquido nos tecidos." },
+            { img: ASSETS.illus2, t: "Inflamação silenciosa", d: "Alimentos pró-inflamatórios mantêm o abdômen distendido." },
+            { img: ASSETS.illus3, t: "Intestino lento", d: "Trânsito travado gera empachamento, gases e desconforto." },
+          ].map((s) => (
+            <div key={s.t} className="flex flex-col items-center rounded-2xl bg-card p-5 text-center shadow-[var(--shadow-soft)] ring-1 ring-border">
+              <div className="grid h-32 w-32 place-items-center">
+                <img src={s.img} alt={s.t} className="h-full w-full object-contain" loading="lazy" />
+              </div>
+              <h3 className="mt-2 text-base font-bold text-primary-deep">{s.t}</h3>
+              <p className="mt-1 text-sm text-muted-foreground">{s.d}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* MÉTODO 3 PASSOS */}
+      <section className="mt-20 bg-gradient-to-b from-[oklch(0.97_0.02_140)] to-transparent py-16">
+        <div className="mx-auto max-w-3xl px-4">
+          <div className="text-center">
+            <Pill tone="gold">O Método em 3 passos</Pill>
+            <h2 className="mt-3 text-2xl font-bold text-primary-deep sm:text-4xl">Simples. Guiado. Em 14 dias.</h2>
+          </div>
+
+          <div className="mt-10 space-y-6">
+            {[
+              { n: "01", img: ASSETS.illus2, t: "Identifique os gatilhos", d: "Mapeie em 48h o que está inflamando o seu corpo: alimentos, hábitos e rotinas." },
+              { n: "02", img: ASSETS.illus3, t: "Aplique o protocolo", d: "Cardápio desinflamatório, rituais drenantes e ajustes inteligentes no dia a dia." },
+              { n: "03", img: ASSETS.illus4, t: "Sinta a transformação", d: "Menos inchaço, mais leveza, roupas voltando a servir e autoestima em alta." },
+            ].map((s, idx) => (
+              <div key={s.n} className={`flex flex-col items-center gap-4 rounded-3xl bg-card p-5 shadow-[var(--shadow-soft)] ring-1 ring-border sm:flex-row ${idx % 2 === 1 ? "sm:flex-row-reverse" : ""}`}>
+                <div className="relative grid h-40 w-40 shrink-0 place-items-center rounded-2xl bg-[var(--primary-soft)]">
+                  <img src={s.img} alt={s.t} className="h-36 w-36 object-contain" loading="lazy" />
+                  <span className="absolute -left-2 -top-2 grid h-10 w-10 place-items-center rounded-full bg-[var(--gold)] font-display text-base font-bold text-white shadow-[var(--shadow-gold)]">
+                    {s.n}
+                  </span>
+                </div>
+                <div className="min-w-0 text-center sm:text-left">
+                  <h3 className="text-xl font-bold text-primary-deep">{s.t}</h3>
+                  <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{s.d}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <div className="mt-10">
+            <CTA>QUERO COMEÇAR MEUS 14 DIAS</CTA>
+          </div>
+        </div>
+      </section>
+
+      {/* DIFERENCIAL */}
+      <section className="mx-auto mt-20 max-w-3xl px-4">
+        <div className="text-center">
+          <Pill tone="gold"><Sparkles className="h-3 w-3" /> Mecanismo único</Pill>
+          <h2 className="mt-3 text-balance text-2xl font-bold text-primary-deep sm:text-4xl">Por que este método é diferente?</h2>
+          <p className="mx-auto mt-3 max-w-xl text-sm text-muted-foreground sm:text-base">
+            É um protocolo focado nos <strong className="text-foreground">3 fatores reais ligados ao inchaço feminino</strong>. Nada de promessa milagrosa.
+          </p>
+        </div>
+        <div className="mt-8 grid grid-cols-2 gap-3 sm:grid-cols-3">
+          {[
+            "Dieta extrema",
+            "Jejum radical",
+            "Chá milagroso",
+            "Remédio diurético",
+            "Solução temporária",
+            "Treino exaustivo",
+          ].map((n) => (
+            <div key={n} className="flex items-center gap-2 rounded-xl bg-card p-3 text-sm shadow-[var(--shadow-soft)] ring-1 ring-border">
+              <div className="grid h-6 w-6 shrink-0 place-items-center rounded-full bg-[oklch(0.96_0.04_30)] text-[var(--destructive)]">
+                <X className="h-3.5 w-3.5" />
+              </div>
+              <span className="font-medium text-foreground">Não é {n.toLowerCase()}</span>
+            </div>
+          ))}
+        </div>
+        <div className="mt-5 rounded-2xl bg-[var(--primary-deep)] p-5 text-center text-white shadow-[var(--shadow-premium)]">
+          <p className="text-sm leading-relaxed sm:text-base">
+            É um <strong className="text-[var(--gold-soft)]">protocolo guiado dia a dia</strong>, criado para o corpo feminino, que age na retenção, na inflamação e no intestino — os 3 fatores que realmente mantêm a barriga estufada.
+          </p>
+        </div>
+        <div className="mt-6 text-center">
+          <a href={CHECKOUT_URL} onClick={() => { trackEvent("AddToCart", { content_name: "Método Anti-Inchaço Feminino", currency: "BRL", value: 39.90 }); }} className="inline-flex items-center gap-1.5 text-sm font-bold text-[var(--success)] underline-offset-4 hover:underline">
+            👉 Quero aplicar o protocolo <ArrowRight className="h-4 w-4" />
+          </a>
+        </div>
+      </section>
+
+      {/* BENEFÍCIOS */}
+      <section className="mx-auto mt-16 max-w-3xl px-4">
+        <div className="text-center">
+          <Pill>Resultados reais</Pill>
+          <h2 className="mt-3 text-2xl font-bold text-primary-deep sm:text-4xl">O que você vai sentir</h2>
+        </div>
+        <div className="mt-8 grid grid-cols-1 gap-3 sm:grid-cols-2">
+          {[
+            "Menos inchaço abdominal já nos primeiros dias",
+            "Sensação real de leveza ao longo do dia",
+            "Mais disposição e energia da manhã à noite",
+            "Digestão mais leve, sem peso após as refeições",
+            "Intestino funcionando com regularidade",
+            "Autoestima e confiança elevadas",
+            "Roupas favoritas voltando a vestir",
+            "Mais segurança ao se olhar no espelho",
+          ].map((b) => (
+            <div key={b} className="flex items-start gap-3 rounded-xl bg-card p-3 shadow-[var(--shadow-soft)] ring-1 ring-border">
+              <div className="mt-0.5 grid h-6 w-6 shrink-0 place-items-center rounded-full bg-[var(--success)] text-white">
+                <Check className="h-4 w-4" />
+              </div>
+              <p className="text-sm font-medium text-foreground">{b}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* IMAGINE */}
+      <section className="mx-auto mt-20 max-w-3xl px-4">
+        <div className="overflow-hidden rounded-3xl bg-gradient-to-br from-[var(--primary-soft)] via-card to-[oklch(0.97_0.04_85)] p-6 shadow-[var(--shadow-premium)] ring-1 ring-border sm:p-10">
+          <div className="text-center">
+            <Pill tone="gold"><Heart className="h-3 w-3" /> A sua nova rotina</Pill>
+            <h2 className="mt-3 font-display text-2xl font-bold text-primary-deep sm:text-4xl">
+              Imagine acordar e sentir…
+            </h2>
+          </div>
+          <ul className="mx-auto mt-6 max-w-xl space-y-2.5">
+            {[
+              "A barriga mais leve já ao se levantar",
+              "A roupa fechando sem aquele esforço de prender o ar",
+              "Menos desconforto e peso depois das refeições",
+              "Mais confiança para sair, marcar reunião, encontrar amigas",
+              "Mais segurança nas fotos — sem se esconder atrás de ninguém",
+              "Voltar a gostar do que vê quando passa em frente ao espelho",
+            ].map((b) => (
+              <li key={b} className="flex items-start gap-3 rounded-xl bg-card/70 p-3 backdrop-blur ring-1 ring-border">
+                <Sparkles className="mt-0.5 h-5 w-5 shrink-0 text-[var(--gold)]" />
+                <span className="text-sm font-medium text-foreground sm:text-base">{b}</span>
+              </li>
+            ))}
+          </ul>
+          <div className="mt-6 text-center">
+            <a href={CHECKOUT_URL} onClick={() => { trackEvent("AddToCart", { content_name: "Método Anti-Inchaço Feminino", currency: "BRL", value: 39.90 }); }} className="inline-flex items-center gap-1.5 text-sm font-bold text-[var(--success)] underline-offset-4 hover:underline">
+              👉 Quero sentir essa diferença <ArrowRight className="h-4 w-4" />
+            </a>
+          </div>
+        </div>
+      </section>
+
+      {/* PROVA VISUAL */}
+      <section className="mx-auto mt-20 max-w-3xl px-4">
+        <div className="text-center">
+          <Pill tone="gold"><Sparkles className="h-3 w-3" /> Prova visual</Pill>
+          <h2 className="mt-3 text-2xl font-bold text-primary-deep sm:text-4xl">Quando o corpo desincha por dentro, o reflexo aparece por fora.</h2>
+        </div>
+
+        <div className="mt-8 grid grid-cols-1 gap-6 sm:grid-cols-2">
+          <div className="overflow-hidden rounded-3xl bg-card shadow-[var(--shadow-premium)] ring-1 ring-border">
+            <img src={ASSETS.faceBA} alt="Antes e depois — rosto desinchado" className="w-full object-cover" loading="lazy" width={800} height={400} />
+            <div className="grid grid-cols-2 border-t border-border text-center text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+              <div className="border-r border-border py-2">Antes</div>
+              <div className="py-2 text-[var(--success)]">Depois</div>
+            </div>
+          </div>
+
+          <div className="overflow-hidden rounded-3xl bg-card shadow-[var(--shadow-premium)] ring-1 ring-border">
+            <img src={ASSETS.bodyTransform} alt="Antes e depois — corpo desinchado" className="w-full object-cover" loading="lazy" width={800} height={800} />
+            <div className="grid grid-cols-2 border-t border-border text-center text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+              <div className="border-r border-border py-2">Antes</div>
+              <div className="py-2 text-[var(--success)]">Depois</div>
+            </div>
+          </div>
+        </div>
+
+
+        <p className="mt-3 text-center text-[11px] italic text-muted-foreground">*Resultados podem variar conforme rotina, alimentação e organismo de cada mulher.</p>
+      </section>
+
+      {/* PROVA SOCIAL */}
+      <section className="mt-20 bg-[var(--primary-deep)] py-14 text-white">
+        <div className="mx-auto max-w-3xl px-4 text-center">
+          <div className="flex flex-col items-center gap-2">
+            <Stars />
+            <p className="text-5xl font-bold font-display">4,9</p>
+            <p className="text-sm opacity-90">Avaliação média de mais de <strong>12.000 mulheres</strong></p>
+          </div>
+          <p className="mx-auto mt-5 max-w-xl text-sm leading-relaxed opacity-90 sm:text-base">
+            Mais de <strong className="text-[var(--gold-soft)]">12.000 mulheres</strong> já iniciaram o protocolo 14D™ e registraram melhorias em:
+          </p>
+          <div className="mx-auto mt-4 grid max-w-xl grid-cols-2 gap-2 text-left text-xs sm:grid-cols-5 sm:text-[11px]">
+            {["Retenção", "Digestão", "Conforto abdominal", "Sensação de leveza", "Autoestima"].map((b) => (
+              <div key={b} className="flex items-center gap-1.5 rounded-full bg-white/10 px-3 py-1.5 ring-1 ring-white/15">
+                <Check className="h-3.5 w-3.5 text-[var(--gold-soft)]" />
+                <span className="font-medium">{b}</span>
+              </div>
+            ))}
+          </div>
+          <div className="mx-auto mt-6 inline-flex items-center gap-2 rounded-full bg-white/10 px-4 py-2 text-xs font-medium ring-1 ring-white/20">
+            <span className="relative flex h-2 w-2">
+              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[var(--gold)] opacity-75" />
+              <span className="relative inline-flex h-2 w-2 rounded-full bg-[var(--gold)]" />
+            </span>
+            <strong>191 mulheres</strong> começaram o protocolo nas últimas 24h
+          </div>
+        </div>
+      </section>
+
+      {/* DEPOIMENTOS */}
+      <section className="mx-auto mt-16 max-w-3xl px-4">
+        <div className="text-center">
+          <Pill>Histórias reais</Pill>
+          <h2 className="mt-3 text-2xl font-bold text-primary-deep sm:text-4xl">O que dizem as mulheres do método</h2>
+        </div>
+
+        <div className="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-2">
+          {[
+            { n: "Aline R.", age: 38, t: "Em 6 dias já notei diferença", d: "Minha barriga inchava todo fim de tarde. Comecei o protocolo na segunda e na sexta eu já consegui fechar a calça que estava guardada." },
+            { n: "Patrícia M.", age: 42, t: "Sumiu o peso depois do almoço", d: "Eu vivia empachada. Hoje almoço bem, tomo água do jeito que o método ensina e me sinto leve a tarde inteira." },
+            { n: "Cláudia S.", age: 45, t: "O intestino voltou a funcionar", d: "Era de 3 em 3 dias, com muito desconforto. Em duas semanas virou rotina diária, sem forçar nada." },
+            { n: "Renata L.", age: 47, t: "Voltei a vestir meu jeans", d: "Estava parado no armário há quase um ano. Não é mágica, é seguir o passo a passo. Recomendo demais." },
+            { n: "Sandra T.", age: 51, t: "Mais energia que aos 40", d: "Achei que era idade, era inflamação. Reduzi inchaço, perdi medidas e minha disposição mudou completamente." },
+            { n: "Juliana B.", age: 39, t: "Foto sem prender a barriga", d: "Pela primeira vez em anos tirei foto na praia sem segurar. Confiança não tem preço." },
+            { n: "Mariana C.", age: 44, t: "Saí da menopausa inchada", d: "Tudo o que eu comia parecia inflamar. O cardápio desinflamatório foi o que finalmente funcionou pra mim." },
+            { n: "Beatriz N.", age: 36, t: "Drenagem que faz diferença", d: "Os rituais são simples e rápidos. Em poucos dias o rosto desinchou e a barriga deu uma baixada visível." },
+          ].map((t) => (
+            <div key={t.n} className="rounded-2xl bg-card p-5 shadow-[var(--shadow-soft)] ring-1 ring-border">
+              <Stars />
+              <p className="mt-2 text-sm font-bold text-primary-deep">"{t.t}"</p>
+              <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{t.d}</p>
+              <div className="mt-3 flex items-center gap-3 border-t border-border pt-3">
+                <div className="grid h-9 w-9 place-items-center rounded-full bg-[var(--primary-soft)] text-sm font-bold text-primary-deep">
+                  {t.n.charAt(0)}
+                </div>
+                <div className="text-xs">
+                  <p className="font-semibold text-foreground">{t.n}</p>
+                  <p className="text-muted-foreground">{t.age} anos · Compra verificada</p>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* ERROS */}
+      <section className="mx-auto mt-20 max-w-3xl px-4">
+        <div className="text-center">
+          <Pill><AlertTriangle className="h-3 w-3" /> Atenção</Pill>
+          <h2 className="mt-3 text-2xl font-bold text-primary-deep sm:text-4xl">Por que tantas mulheres não conseguem desinchar?</h2>
+        </div>
+
+        <div className="mt-8 space-y-3">
+          {[
+            { t: "Cortar comida demais", d: "Restrição extrema reduz metabolismo e o corpo segura ainda mais líquido como defesa." },
+            { t: "Seguir receitas aleatórias da internet", d: "Sem estratégia, sem sequência, sem mecanismo. O corpo não responde a tentativa e erro." },
+            { t: "Ignorar a retenção de líquidos", d: "A maior parte do inchaço abdominal não é gordura. É líquido + inflamação travados há meses." },
+          ].map((e, i) => (
+            <div key={e.t} className="flex gap-4 rounded-2xl bg-card p-4 shadow-[var(--shadow-soft)] ring-1 ring-border">
+              <div className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-[oklch(0.96_0.04_30)] font-display text-base font-bold text-[var(--destructive)]">
+                {i + 1}
+              </div>
+              <div className="min-w-0">
+                <p className="text-sm font-bold text-foreground">{e.t}</p>
+                <p className="mt-1 text-sm text-muted-foreground">{e.d}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+        <div className="mt-6 rounded-2xl bg-[var(--primary-soft)] p-4 text-center text-sm font-medium text-primary-deep ring-1 ring-[color-mix(in_oklab,var(--primary)_25%,transparent)]">
+          O Método Anti-Inchaço Feminino corrige os 3 erros com um protocolo guiado, dia a dia.
+        </div>
+      </section>
+
+      {/* PARA QUEM */}
+      <section className="mx-auto mt-20 max-w-3xl px-4">
+        <div className="text-center">
+          <Pill>Indicado para</Pill>
+          <h2 className="mt-3 text-2xl font-bold text-primary-deep sm:text-4xl">Para quem este método foi criado?</h2>
+        </div>
+        <div className="mt-8 grid grid-cols-1 gap-3 sm:grid-cols-2">
+          {[
+            "Mulheres acima dos 35 anos",
+            "Mulheres que acordam bem e terminam o dia inchadas",
+            "Mulheres com retenção de líquidos constante",
+            "Mulheres que já tentaram dietas e não obtiveram resultado",
+            "Mulheres que querem voltar a vestir suas roupas favoritas",
+            "Mulheres que querem se sentir leves e confiantes de novo",
+          ].map((b) => (
+            <div key={b} className="flex items-start gap-3 rounded-xl bg-card p-3 shadow-[var(--shadow-soft)] ring-1 ring-border">
+              <div className="mt-0.5 grid h-6 w-6 shrink-0 place-items-center rounded-full bg-[var(--success)] text-white">
+                <Check className="h-4 w-4" />
+              </div>
+              <p className="text-sm font-medium text-foreground">{b}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* OBJEÇÕES */}
+      <section className="mx-auto mt-20 max-w-3xl px-4">
+        <div className="text-center">
+          <Pill><Heart className="h-3 w-3" /> Talvez você esteja pensando…</Pill>
+          <h2 className="mt-3 text-2xl font-bold text-primary-deep sm:text-4xl">As 3 dúvidas mais comuns antes de começar</h2>
+        </div>
+        <div className="mt-8 space-y-3">
+          {[
+            { q: "“Já tentei de tudo.”", a: "Perfeito. A maioria das mulheres que entra no protocolo 14D™ também dizia isso — e foi exatamente por isso que finalmente funcionou. O problema nunca foi você, foi a abordagem." },
+            { q: "“Não tenho tempo.”", a: "O protocolo leva poucos minutos por dia. Foi desenhado para mulheres ocupadas, com rotina pesada, filhos, casa e trabalho." },
+            { q: "“Tenho mais de 40 anos.”", a: "Grande parte das participantes tem entre 40 e 55 anos. O método foi criado considerando alterações hormonais, metabolismo mais lento e retenção típica dessa fase." },
+          ].map((e) => (
+            <div key={e.q} className="rounded-2xl bg-card p-5 shadow-[var(--shadow-soft)] ring-1 ring-border">
+              <p className="text-sm font-bold text-primary-deep sm:text-base">{e.q}</p>
+              <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{e.a}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* OFERTA */}
+      <section id="oferta" className="mt-20 px-4">
+        <div className="mx-auto max-w-3xl">
+          <div className="text-center">
+            <Pill tone="gold"><Sparkles className="h-3 w-3" /> Sistema 14D™ · Liberação imediata</Pill>
+            <h2 className="mt-3 text-balance text-2xl font-bold text-primary-deep sm:text-4xl">Protocolo Feminino de Reequilíbrio Corporal 14D™</h2>
+            <p className="mx-auto mt-3 max-w-xl text-sm leading-relaxed text-muted-foreground sm:text-base">
+              Você não está adquirindo apenas um ebook. Está entrando em um <strong className="text-foreground">sistema feminino completo, guiado dia a dia</strong>, criado para reorganizar seu corpo em 14 dias — agindo na retenção, na inflamação e no intestino.
+            </p>
+          </div>
+
+          <div className="mt-8 overflow-hidden rounded-3xl bg-gradient-to-br from-[oklch(0.98_0.015_140)] to-card shadow-[var(--shadow-premium)] ring-1 ring-[color-mix(in_oklab,var(--gold)_30%,transparent)]">
+            <div className="grid gap-6 p-5 sm:grid-cols-[260px_1fr] sm:p-8">
+              {/* Cover */}
+              <div className="relative mx-auto w-full max-w-[240px]">
+                <div className="absolute -inset-4 rounded-[2rem] bg-gradient-to-br from-[var(--gold-soft)] via-transparent to-[var(--primary-soft)] blur-2xl" />
+                <div className="relative rotate-[-3deg] overflow-hidden rounded-2xl shadow-[var(--shadow-premium)] ring-1 ring-black/10 transition-transform hover:rotate-0">
+                  <img src={ebookCover.url} alt="Capa do Método Anti-Inchaço Feminino" className="block w-full" width={1054} height={1492} />
+                </div>
+              </div>
+
+              {/* Items */}
+              <div>
+                <h3 className="font-display text-xl font-bold text-primary-deep sm:text-2xl">Liberado no primeiro dia</h3>
+                <p className="mt-1 text-sm text-muted-foreground">Tudo o que você recebe assim que confirmar o pagamento</p>
+
+                <ul className="mt-4 space-y-2.5">
+                  {[
+                    { t: "Protocolo Feminino 14D™ (sistema guiado)", v: "R$ 97" },
+                    { t: "Cardápio Desinflamatório completo", v: "R$ 47" },
+                    { t: "Guia do Intestino Funcional", v: "R$ 47" },
+                    { t: "Ritual Drenante (passo a passo)", v: "R$ 47" },
+                    { t: "Receitas Anti-Inchaço", v: "R$ 47" },
+                    { t: "Lista de Compras Inteligente", v: "R$ 37" },
+                  ].map((i) => (
+                    <li key={i.t} className="flex items-start gap-3 text-sm">
+                      <div className="mt-0.5 grid h-5 w-5 shrink-0 place-items-center rounded-full bg-[var(--success)] text-white">
+                        <Check className="h-3 w-3" />
+                      </div>
+                      <span className="flex-1 text-foreground">{i.t}</span>
+                      <span className="shrink-0 text-xs font-semibold text-muted-foreground">{i.v}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+
+            {/* Price block */}
+            <div className="border-t border-border bg-[var(--primary-deep)] px-5 py-6 text-center text-white sm:px-8">
+              <p className="mx-auto max-w-md text-sm font-display italic leading-snug text-[var(--gold-soft)] sm:text-base">
+                Quanto vale voltar a se sentir bem com o seu próprio corpo?
+              </p>
+              <div className="mx-auto mt-4 h-px w-16 bg-white/20" />
+              <p className="mt-4 text-xs uppercase tracking-widest opacity-80">Valor total dos materiais</p>
+              <p className="mt-1 text-lg font-medium line-through opacity-70">R$ 322,00</p>
+              <p className="mt-2 text-xs font-semibold uppercase tracking-widest text-[var(--gold-soft)]">Hoje, por apenas</p>
+              <div className="mt-1 flex items-end justify-center gap-2">
+                <span className="font-display text-2xl">R$</span>
+                <span className="font-display text-6xl font-bold leading-none">39<span className="text-3xl">,90</span></span>
+              </div>
+              <p className="mt-2 text-xs opacity-90">ou 4x de R$ 11,07 no cartão</p>
+              <p className="mt-2 inline-block rounded-full bg-[var(--gold)]/20 px-3 py-1 text-[11px] font-bold uppercase tracking-wider text-[var(--gold-soft)] ring-1 ring-[var(--gold)]/40">
+                Economia de R$ 282,10
+              </p>
+
+              <div className="mt-6">
+                <CTA sub="🔒 Pagamento 100% seguro · Acesso imediato">QUERO ACESSO IMEDIATO</CTA>
+              </div>
+
+              <div className="mx-auto mt-5 flex max-w-md items-start gap-2 rounded-xl bg-white/5 px-4 py-3 text-left text-[11px] leading-relaxed text-white/90 ring-1 ring-white/15">
+                <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0 text-[var(--gold-soft)]" />
+                <span>Esta condição promocional pode ser encerrada sem aviso após o término desta campanha.</span>
+              </div>
+
+              <div className="mt-5 flex flex-wrap items-center justify-center gap-x-4 gap-y-2 text-[11px] opacity-90">
+                <span className="inline-flex items-center gap-1"><ShieldCheck className="h-3.5 w-3.5" /> 7 dias de garantia</span>
+                <span className="inline-flex items-center gap-1"><Lock className="h-3.5 w-3.5" /> Ambiente protegido</span>
+                <span className="inline-flex items-center gap-1"><Clock className="h-3.5 w-3.5" /> Liberação imediata</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* GARANTIA */}
+      <section className="mx-auto mt-16 max-w-3xl px-4">
+        <div className="relative overflow-hidden rounded-3xl bg-card p-6 shadow-[var(--shadow-premium)] ring-1 ring-border sm:p-8">
+          <div className="flex flex-col items-center gap-4 text-center sm:flex-row sm:text-left">
+            <div className="relative grid h-28 w-28 shrink-0 place-items-center rounded-full bg-gradient-to-br from-[var(--gold-soft)] to-[var(--gold)] shadow-[var(--shadow-gold)]">
+              <ShieldCheck className="h-14 w-14 text-white" />
+              <span className="absolute -bottom-1 rounded-full bg-[var(--primary-deep)] px-3 py-0.5 text-[10px] font-bold uppercase tracking-widest text-white">7 dias</span>
+            </div>
+            <div>
+              <Pill tone="gold"><ShieldCheck className="h-3 w-3" /> Garantia Blindada</Pill>
+              <h3 className="mt-2 font-display text-2xl font-bold text-primary-deep sm:text-3xl">Garantia Blindada de 7 Dias</h3>
+              <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
+                Use o protocolo por 7 dias. Se você <strong>não sentir seu corpo mais leve</strong>, devolvemos <strong className="text-[var(--success)]">100% do seu investimento</strong>. Sem perguntas. Sem burocracia. O risco é todo nosso.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* FAQ */}
+      <section className="mx-auto mt-16 max-w-3xl px-4">
+        <div className="text-center">
+          <Pill>Perguntas frequentes</Pill>
+          <h2 className="mt-3 text-2xl font-bold text-primary-deep sm:text-4xl">Ainda com dúvidas?</h2>
+        </div>
+        <div className="mt-6 space-y-3">
+          {faqs.map((f) => <FAQItem key={f.q} q={f.q} a={f.a} />)}
+        </div>
+      </section>
+
+      {/* WHATSAPP SUPPORT */}
+      <section className="mx-auto mt-12 max-w-3xl px-4">
+        <div className="flex flex-col items-center gap-3 rounded-2xl bg-[oklch(0.97_0.05_150)] p-5 text-center shadow-[var(--shadow-soft)] ring-1 ring-[color-mix(in_oklab,var(--success)_25%,transparent)] sm:flex-row sm:text-left">
+          <div className="grid h-12 w-12 shrink-0 place-items-center rounded-full bg-[var(--success)] text-white">
+            <MessageCircle className="h-6 w-6" />
+          </div>
+          <div className="flex-1">
+            <p className="font-display text-base font-bold text-primary-deep sm:text-lg">Ainda com dúvidas?</p>
+            <p className="text-sm text-muted-foreground">Nossa equipe responde rapidinho pelo WhatsApp — antes e depois da compra.</p>
+          </div>
+          <a
+            href="https://wa.me/5511999999999?text=Ol%C3%A1!%20Tenho%20uma%20d%C3%BAvida%20sobre%20o%20Sistema%2014D%E2%84%A2"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex shrink-0 items-center gap-2 rounded-xl bg-[var(--success)] px-4 py-2.5 text-sm font-bold text-white shadow-md"
+          >
+            <MessageCircle className="h-4 w-4" /> Falar no WhatsApp
+          </a>
+        </div>
+      </section>
+
+
+      {/* FINAL CTA */}
+      <section className="mt-16 px-4">
+        <div className="mx-auto max-w-3xl rounded-3xl bg-gradient-to-br from-[var(--primary-deep)] to-[var(--primary)] p-6 text-center text-white shadow-[var(--shadow-premium)] sm:p-10">
+          <Flower2 className="mx-auto h-10 w-10 text-[var(--gold-soft)]" />
+          <h2 className="mt-3 font-display text-2xl font-bold sm:text-4xl">Você pode continuar lidando com o inchaço todos os dias…</h2>
+          <p className="mx-auto mt-3 max-w-xl text-sm opacity-95 sm:text-base">
+            …ou começar hoje o método que já ajudou <strong className="text-[var(--gold-soft)]">mais de 12.000 mulheres</strong> a recuperar a leveza, a confiança e o orgulho de se olhar no espelho.
+          </p>
+          <div className="mt-6">
+            <CTA sub="Acesso imediato após a confirmação do pagamento">COMEÇAR MEU MÉTODO AGORA</CTA>
+          </div>
+        </div>
+      </section>
+      </main>
+
+      {/* FOOTER */}
+      <footer className="mx-auto mt-16 max-w-3xl px-4 text-center">
+        <div className="flex items-center justify-center gap-2 text-primary-deep">
+          <Leaf className="h-4 w-4" />
+          <span className="text-sm font-semibold">Método Anti-Inchaço Feminino</span>
+        </div>
+        <p className="mt-3 text-xs leading-relaxed text-foreground/80">
+          Este produto não substitui acompanhamento médico, nutricional ou tratamento profissional. Resultados podem variar de pessoa para pessoa.
+          Em caso de gestação, doenças preexistentes ou uso contínuo de medicamentos, consulte seu médico antes de iniciar qualquer protocolo.
+        </p>
+        <p className="mt-3 text-xs text-foreground/80">© {new Date().getFullYear()} Método Anti-Inchaço Feminino. Todos os direitos reservados.</p>
+      </footer>
+
+      <StickyCTA />
+      <QuizPopup />
+    </div>
+  );
+}
