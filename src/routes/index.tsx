@@ -1,9 +1,9 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
 import {
-  Leaf, Droplets, Check, Star, ShieldCheck, Lock, Clock,
+  Leaf, Droplets, Flower2, Check, Star, ShieldCheck, Lock, Clock,
   Sparkles, Heart, ArrowRight, Volume2, VolumeX, ChevronDown, X,
-  Utensils, Activity, TrendingDown, AlertTriangle, Gift,
+  Utensils, Activity, TrendingDown, AlertTriangle, MessageCircle, Gift,
   Mail,
 } from "lucide-react";
 import { trackEvent } from "@/lib/meta-pixel";
