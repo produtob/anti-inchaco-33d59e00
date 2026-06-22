@@ -1,9 +1,9 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
 import {
-  Leaf, Droplets, Check, Star, ShieldCheck, Lock, Clock,
+  Leaf, Droplets, Flower2, Check, Star, ShieldCheck, Lock, Clock,
   Sparkles, Heart, ArrowRight, Volume2, VolumeX, ChevronDown, X,
-  Utensils, Activity, TrendingDown, AlertTriangle, Gift,
+  Utensils, Activity, TrendingDown, AlertTriangle, MessageCircle, Gift,
   Mail,
 } from "lucide-react";
 import { trackEvent } from "@/lib/meta-pixel";
@@ -550,7 +550,7 @@ function LandingPage() {
           </div>
 
           <div className="mt-4 overflow-hidden rounded-2xl bg-card shadow-[var(--shadow-soft)] ring-1 ring-border">
-            <img src={ASSETS.faceBA} alt="Antes e depois — rosto desinchado" className="w-full object-cover" loading="eager" fetchpriority="high" width={800} height={400} />
+            <img src={ASSETS.faceBA} alt="Antes e depois — rosto desinchado" className="w-full object-cover" loading="eager" fetchPriority="high" width={800} height={400} />
             <div className="grid grid-cols-2 border-t border-border text-center text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
               <div className="border-r border-border py-2">Antes</div>
               <div className="py-2 text-[var(--success)]">Depois</div>
@@ -954,7 +954,7 @@ function LandingPage() {
               <div className="relative mx-auto w-full max-w-[240px]">
                 <div className="absolute -inset-4 rounded-[2rem] bg-gradient-to-br from-[var(--gold-soft)] via-transparent to-[var(--primary-soft)] blur-2xl" />
                 <div className="relative rotate-[-3deg] overflow-hidden rounded-2xl shadow-[var(--shadow-premium)] ring-1 ring-black/10 transition-transform hover:rotate-0">
-                  <img src={ebookCover.url} alt="Capa do Método Anti-Inchaço Feminino" className="block w-full" width={1054} height={1492} />
+                  <img src={ASSETS.ebookCover} alt="Capa do Método Anti-Inchaço Feminino" className="block w-full" width={1054} height={1492} />
                 </div>
               </div>
 
