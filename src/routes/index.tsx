@@ -167,7 +167,9 @@ function StickyCTA() {
     try {
       trackEvent("AddToCart", { content_name: "Sistema Feminino 14D™", currency: "BRL", value: 39.90 });
       trackEvent("InitiateCheckout", { content_name: "Sistema Feminino 14D™", currency: "BRL", value: 39.90, num_items: 1 });
-    } catch {}
+    } catch (error) {
+      if (import.meta.env.DEV) console.warn("Sticky checkout tracking failed", error);
+    }
   };
   return (
     <div className="fixed inset-x-0 bottom-0 z-40 border-t border-border bg-background/95 px-3 pb-[calc(env(safe-area-inset-bottom)+8px)] pt-2 backdrop-blur md:px-4">
@@ -287,7 +289,11 @@ function QuizPopup() {
   useEffect(() => {
     if (open) {
       document.body.style.overflow = "hidden";
-      try { trackEvent("ViewContent", { content_name: "Quiz Anti-Inchaço" }); } catch {}
+      try {
+        trackEvent("ViewContent", { content_name: "Quiz Anti-Inchaço" });
+      } catch (error) {
+        if (import.meta.env.DEV) console.warn("Quiz tracking failed", error);
+      }
     } else {
       document.body.style.overflow = "";
     }
@@ -324,7 +330,9 @@ function QuizPopup() {
     try {
       localStorage.setItem("mai_lead", JSON.stringify({ email: trimmed, type: dominant, ts: Date.now() }));
       trackEvent("Lead", { content_name: "Quiz Anti-Inchaço", content_category: dominant });
-    } catch {}
+    } catch (error) {
+      if (import.meta.env.DEV) console.warn("Lead capture failed", error);
+    }
     sessionStorage.setItem(QUIZ_KEY, "1");
     setDone(true);
   };
