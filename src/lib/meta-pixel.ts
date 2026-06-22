@@ -5,10 +5,12 @@ export const FB_PIXEL_ID = "1301360554447433";
 
 declare global {
   interface Window {
-    fbq?: (...args: any[]) => void;
-    _fbq?: any;
+    fbq?: (...args: unknown[]) => void;
+    _fbq?: unknown;
   }
 }
+
+type PixelParams = Record<string, string | number | boolean | null | undefined>;
 
 function uuid() {
   if (typeof crypto !== "undefined" && "randomUUID" in crypto) return crypto.randomUUID();
@@ -38,14 +40,16 @@ function getFbc(): string | undefined {
 
 export function trackEvent(
   eventName: string,
-  params: Record<string, any> = {},
+  params: PixelParams = {},
 ) {
   if (typeof window === "undefined") return;
   const eventId = uuid();
   // Browser pixel
   try {
     window.fbq?.("track", eventName, params, { eventID: eventId });
-  } catch {}
+  } catch (error) {
+    if (import.meta.env.DEV) console.warn("Meta Pixel event failed", error);
+  }
   // Server-side CAPI (deduped via event_id)
   // try {
   //   void sendCapiEvent({
