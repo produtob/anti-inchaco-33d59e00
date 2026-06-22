@@ -8,18 +8,16 @@ import {
 } from "lucide-react";
 import { trackEvent } from "@/lib/meta-pixel";
 
-// Asset URLs — hosted on Lovable CDN (public, works on any hosting)
-const BASE = "https://a675c091-4e46-469d-a50b-b16c783b10f8.lovableproject.com";
 const ASSETS = {
-  ebookCover:    `${BASE}/lovable-uploads/ebook-cover.png`,
-  vslVideo:      `${BASE}/lovable-uploads/vsl.mp4`,
-  faceBA:        `${BASE}/lovable-uploads/face-before-after.jpg`,
-  bodyTransform: `${BASE}/lovable-uploads/body-transform.png`,
-  clickToHear:   `${BASE}/lovable-uploads/click-to-hear.jpg`,
-  illus1:        `${BASE}/lovable-uploads/illus-1.png`,
-  illus2:        `${BASE}/lovable-uploads/illus-2.png`,
-  illus3:        `${BASE}/lovable-uploads/illus-3.png`,
-  illus4:        `${BASE}/lovable-uploads/illus-4.png`,
+  ebookCover:    "/lovable-uploads/ebook-cover.png",
+  vslVideo:      "/lovable-uploads/vsl.mp4",
+  faceBA:        "/lovable-uploads/face-before-after.jpg",
+  bodyTransform: "/lovable-uploads/body-transform.png",
+  clickToHear:   "/lovable-uploads/click-to-hear.jpg",
+  illus1:        "/lovable-uploads/illus-1.png",
+  illus2:        "/lovable-uploads/illus-2.png",
+  illus3:        "/lovable-uploads/illus-3.png",
+  illus4:        "/lovable-uploads/illus-4.png",
 };
 
 const CHECKOUT_URL = "https://pay.cakto.com.br/3a9ynm4_396700";
