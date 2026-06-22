@@ -10,7 +10,8 @@ declare global {
   }
 }
 
-type PixelParams = Record<string, string | number | boolean | null | undefined>;
+type PixelParamValue = string | number | boolean | null | undefined | string[];
+type PixelParams = Record<string, PixelParamValue>;
 
 function uuid() {
   if (typeof crypto !== "undefined" && "randomUUID" in crypto) return crypto.randomUUID();
