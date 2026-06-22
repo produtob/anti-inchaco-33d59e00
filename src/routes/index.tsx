@@ -230,10 +230,13 @@ function FAQItem({ q, a }: { q: string; a: string }) {
 
 /* ---------- Exit Intent Hook & Optimization Components ---------- */
 
-function useExitIntent(delayMs = 5000) {
+function useExitIntent(delayMs = 30000) {
   const [shouldShow, setShouldShow] = useState(false);
   const hasTriggered = useRef(false);
   const timeElapsed = useRef(false);
+  const lastScrollTime = useRef(0);
+  const lastScrollDirection = useRef<"up" | "down" | null>(null);
+  const lastScrollY = useRef(0);
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -251,24 +254,38 @@ function useExitIntent(delayMs = 5000) {
       return;
     }
 
+    // Track scroll direction and timestamp
+    const handleScroll = () => {
+      const currentY = window.scrollY;
+      lastScrollDirection.current = currentY > lastScrollY.current ? "down" : "up";
+      lastScrollY.current = currentY;
+      lastScrollTime.current = Date.now();
+    };
+
     const triggerPopup = () => {
       if (!timeElapsed.current || hasTriggered.current) return;
+      // Suppress if user was actively scrolling in the last 2 seconds
+      const timeSinceScroll = Date.now() - lastScrollTime.current;
+      if (timeSinceScroll < 2000 && lastScrollDirection.current === "down") return;
       hasTriggered.current = true;
       sessionStorage.setItem("anti_inchaco_exit_seen", "true");
       setShouldShow(true);
     };
 
     const handleMouseLeave = (e: MouseEvent) => {
-      // Only trigger if mouse leaves at the top of the window (desktop exit intent)
-      if (e.clientY <= 15) {
+      // Only trigger if mouse exits through the very top of the viewport
+      // (genuine "closing tab / navigating away" gesture)
+      if (e.clientY <= 5 && e.relatedTarget === null) {
         triggerPopup();
       }
     };
 
     // Push a state so when they click back, it pops this state but stays on the page
     window.history.pushState(null, "", window.location.href);
-    
+
     const handlePopState = () => {
+      // Re-push to keep them on the page, then show popup
+      window.history.pushState(null, "", window.location.href);
       triggerPopup();
     };
 
@@ -278,12 +295,14 @@ function useExitIntent(delayMs = 5000) {
       document.addEventListener("mouseleave", handleMouseLeave);
     }
     window.addEventListener("popstate", handlePopState);
+    window.addEventListener("scroll", handleScroll, { passive: true });
 
     return () => {
       if (!isTouch) {
         document.removeEventListener("mouseleave", handleMouseLeave);
       }
       window.removeEventListener("popstate", handlePopState);
+      window.removeEventListener("scroll", handleScroll);
     };
   }, []);
 
@@ -394,7 +413,7 @@ function PostFaqCTA() {
 }
 
 function ExitPopup() {
-  const { shouldShow, close } = useExitIntent(5000);
+  const { shouldShow, close } = useExitIntent(30000);
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -407,24 +426,22 @@ function ExitPopup() {
     setLoading(true);
     
     try {
-      const API_URL = "https://api.sender.net/v2/subscribers";
-      const API_TOKEN = "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiNjg0MWI0MGE0ZjE2NmM3Y2UxNzYyNGNjNmYyYzJlOWVmZjQyOTY3Y2MzMjA2OTRkN2VlZWRiNDZkZDJhMDFmMTM4NjVhMDhkODgyYzg4NDAiLCJpYXQiOjE3ODIxNTM4NDEuODEzMTY5LCJuYmYiOjE3ODIxNTM4NDEuODEzMTcxLCJleHAiOjQ5MzU3NTM4NDEuODExMDIxLCJzdWIiOiIxMDgxMDY5Iiwic2NvcGVzIjpbXX0.V7etXKdSkaj_9BgfOykJG0pSGc0yH2iXo5tOBJ3jxSJD8OPQlkjSQNjWh3E-zjLOApUYSI16CCAAKREE9dMwZYCBh3ozRRRwKGsfLBcbOdOzGagpmgwOTpSUedApigwPeiVEWlVQRGZqJiK7Fw4RbjD8JEIfUVI4pCf-f0STcic5MfDS2WDj79qeLg7NMWwsV_BZClkXuwF2IJPtWpi9Yce2U7IjLXKovQ97MxOvXI5UDSkV1tOoDSn92idiKl6372osUcCBrntSGPtWr3-dHOj-q_LSkJnPdZ3lTwZVG_36qWaOd-5iON5bXBNjh1Wg3p3hRp7qLTsPEcuz_fPpdj8Hxs_SPM6giwtTVsJcs7xupFqxJuPJspxLJzY9xsqFyrP4eYz3iv3H8PUVS1UZLeXiZhdiCWlRKlfgOoy61i9DLRofQyO9yBOVwNhiiuqsclyBNcQT5GXzUZjj6bTV2bSdTgO2olBQqgyCz8iuDs7KgsFV7zHagLACc4dMMR7XTSA2lyUpk9iDqFBLHagXnGY-zI5wSPynAONUFSQqdW66X3PzK4IQATK_Cdc5Se9ydO2UbeICibFoi3DCK3Gie2vq5_TKWcFRqkbsOTdwulyAMJBaGHA64qnT3_qgQZKldTg23LKnXpjSylXbhsYix6is1RPjnR4M82GtnlV_YE0";
+      // EmailOctopus API — salva o lead na lista padrão
+      const EO_API_KEY = "eo_c921b31a647702cf79c361bcbc2ee84776c6797283078fd00074c16206c61484";
+      const EO_LIST_ID = "0fc016ee-6e7e-11f1-9fa8-df186d313282";
+      const EO_URL = `https://emailoctopus.com/api/1.6/lists/${EO_LIST_ID}/contacts`;
 
-      // Dispara a requisição para salvar o email na Sender.net
-      fetch(API_URL, {
+      fetch(EO_URL, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "Accept": "application/json",
-          "Authorization": `Bearer ${API_TOKEN}`
         },
-        body: JSON.stringify({ 
-          email: email
-          // O ID público 2399c806983577 não é estritamente necessário no corpo dessa rota da API v2 
-          // a menos que você vá usar para identificar forms específicos no tracking JS deles.
-          // Com o Bearer token, a API já mapeia o lead para a sua conta.
-        })
-      }).catch(err => console.error("Erro ao salvar email:", err));
+        body: JSON.stringify({
+          api_key: EO_API_KEY,
+          email_address: email,
+          status: "SUBSCRIBED",
+        }),
+      }).catch(err => console.error("Erro ao salvar email no EmailOctopus:", err));
 
       // Dispara os eventos do Pixel
       trackEvent("AddToCart", { content_name: "Método Anti-Inchaço Feminino + Bônus", currency: "BRL", value: 39.90 });
@@ -1158,7 +1175,7 @@ function LandingPage() {
             <p className="text-sm text-muted-foreground">Nossa equipe responde rapidinho pelo WhatsApp — antes e depois da compra.</p>
           </div>
           <a
-            href="https://wa.me/5511999999999?text=Ol%C3%A1!%20Tenho%20uma%20d%C3%BAvida%20sobre%20o%20Sistema%2014D%E2%84%A2"
+            href="https://wa.me/5521980934921?text=Ol%C3%A1!%20Tenho%20uma%20d%C3%BAvida%20sobre%20o%20Sistema%2014D%E2%84%A2"
             target="_blank"
             rel="noopener noreferrer"
             className="inline-flex shrink-0 items-center gap-2 rounded-xl bg-[var(--success)] px-4 py-2.5 text-sm font-bold text-white shadow-md"
