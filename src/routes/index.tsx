@@ -230,7 +230,7 @@ function FAQItem({ q, a }: { q: string; a: string }) {
 
 /* ---------- Exit Intent Hook & Optimization Components ---------- */
 
-function useExitIntent(delayMs = 8000) {
+function useExitIntent(delayMs = 5000) {
   const [shouldShow, setShouldShow] = useState(false);
   const hasTriggered = useRef(false);
   const timeElapsed = useRef(false);
@@ -259,21 +259,30 @@ function useExitIntent(delayMs = 8000) {
     };
 
     const handleMouseLeave = (e: MouseEvent) => {
-      if (e.clientY <= 5) {
+      // Only trigger if mouse leaves at the top of the window (desktop exit intent)
+      if (e.clientY <= 15) {
         triggerPopup();
       }
     };
 
-    window.history.pushState({ exitIntent: true }, "");
-    const handlePopState = (e: PopStateEvent) => {
+    // Push a state so when they click back, it pops this state but stays on the page
+    window.history.pushState(null, "", window.location.href);
+    
+    const handlePopState = () => {
       triggerPopup();
     };
 
-    document.addEventListener("mouseleave", handleMouseLeave);
+    // Avoid mouseleave on touch devices where it might trigger on scroll
+    const isTouch = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
+    if (!isTouch) {
+      document.addEventListener("mouseleave", handleMouseLeave);
+    }
     window.addEventListener("popstate", handlePopState);
 
     return () => {
-      document.removeEventListener("mouseleave", handleMouseLeave);
+      if (!isTouch) {
+        document.removeEventListener("mouseleave", handleMouseLeave);
+      }
       window.removeEventListener("popstate", handlePopState);
     };
   }, []);
