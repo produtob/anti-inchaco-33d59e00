@@ -394,9 +394,45 @@ function PostFaqCTA() {
 }
 
 function ExitPopup() {
-  const { shouldShow, close } = useExitIntent(8000);
+  const { shouldShow, close } = useExitIntent(5000);
+  const [email, setEmail] = useState("");
+  const [loading, setLoading] = useState(false);
 
   if (!shouldShow) return null;
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!email) return;
+    
+    setLoading(true);
+    
+    try {
+      // TODO: Substituir pela URL real da API de Email Marketing (ex: ActiveCampaign, Make, RD Station, etc)
+      const API_URL = "https://sua-api-de-email-marketing.com/endpoint";
+      const API_TOKEN = "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiNjg0MWI0MGE0ZjE2NmM3Y2UxNzYyNGNjNmYyYzJlOWVmZjQyOTY3Y2MzMjA2OTRkN2VlZWRiNDZkZDJhMDFmMTM4NjVhMDhkODgyYzg4NDAiLCJpYXQiOjE3ODIxNTM4NDEuODEzMTY5LCJuYmYiOjE3ODIxNTM4NDEuODEzMTcxLCJleHAiOjQ5MzU3NTM4NDEuODExMDIxLCJzdWIiOiIxMDgxMDY5Iiwic2NvcGVzIjpbXX0.V7etXKdSkaj_9BgfOykJG0pSGc0yH2iXo5tOBJ3jxSJD8OPQlkjSQNjWh3E-zjLOApUYSI16CCAAKREE9dMwZYCBh3ozRRRwKGsfLBcbOdOzGagpmgwOTpSUedApigwPeiVEWlVQRGZqJiK7Fw4RbjD8JEIfUVI4pCf-f0STcic5MfDS2WDj79qeLg7NMWwsV_BZClkXuwF2IJPtWpi9Yce2U7IjLXKovQ97MxOvXI5UDSkV1tOoDSn92idiKl6372osUcCBrntSGPtWr3-dHOj-q_LSkJnPdZ3lTwZVG_36qWaOd-5iON5bXBNjh1Wg3p3hRp7qLTsPEcuz_fPpdj8Hxs_SPM6giwtTVsJcs7xupFqxJuPJspxLJzY9xsqFyrP4eYz3iv3H8PUVS1UZLeXiZhdiCWlRKlfgOoy61i9DLRofQyO9yBOVwNhiiuqsclyBNcQT5GXzUZjj6bTV2bSdTgO2olBQqgyCz8iuDs7KgsFV7zHagLACc4dMMR7XTSA2lyUpk9iDqFBLHagXnGY-zI5wSPynAONUFSQqdW66X3PzK4IQATK_Cdc5Se9ydO2UbeICibFoi3DCK3Gie2vq5_TKWcFRqkbsOTdwulyAMJBaGHA64qnT3_qgQZKldTg23LKnXpjSylXbhsYix6is1RPjnR4M82GtnlV_YE0";
+
+      // Dispara a requisição para salvar o email em background
+      fetch(API_URL, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${API_TOKEN}`
+        },
+        body: JSON.stringify({ email })
+      }).catch(err => console.error("Erro ao salvar email:", err));
+
+      // Dispara os eventos do Pixel
+      trackEvent("AddToCart", { content_name: "Método Anti-Inchaço Feminino + Bônus", currency: "BRL", value: 39.90 });
+      trackEvent("InitiateCheckout", { content_name: "Método Anti-Inchaço Feminino", currency: "BRL", value: 39.90, num_items: 1 });
+
+      // Redireciona para o checkout independentemente da resposta da API (para não travar o lead)
+      window.location.href = CHECKOUT_URL;
+
+    } catch (error) {
+      console.error(error);
+      window.location.href = CHECKOUT_URL;
+    }
+  };
 
   return (
     <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
@@ -421,7 +457,7 @@ function ExitPopup() {
           </h3>
           
           <p className="mt-3 text-xs leading-relaxed text-muted-foreground">
-            Se você garantir seu acesso nos próximos minutos, vamos adicionar de graça o nosso guia secreto:
+            Insira seu melhor e-mail abaixo e vamos adicionar de graça o nosso guia secreto ao seu pedido:
           </p>
 
           <div className="mt-4 rounded-2xl bg-[var(--primary-soft)] p-4 text-left ring-1 ring-[color-mix(in_oklab,var(--primary)_20%,transparent)]">
@@ -438,20 +474,29 @@ function ExitPopup() {
             </div>
           </div>
 
-          <div className="mt-4 border-l-2 border-[var(--gold)] pl-3 text-left">
-            <p className="text-xs italic text-foreground/80 leading-snug">
-              "No 4º dia minha barriga murchou de um jeito que eu não via há anos."
+          <form onSubmit={handleSubmit} className="mt-5 flex flex-col gap-3">
+            <input
+              type="email"
+              required
+              placeholder="Digite seu melhor e-mail"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className="w-full rounded-xl border border-input bg-background px-4 py-3 text-sm shadow-sm transition-colors placeholder:text-muted-foreground focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
+            />
+            <button
+              type="submit"
+              disabled={loading}
+              className={`group relative flex w-full items-center justify-center gap-2 rounded-xl bg-[var(--success)] px-6 py-4 text-center text-[15px] font-bold text-white shadow-[var(--shadow-premium)] transition-transform active:scale-[0.98] ${loading ? 'opacity-80' : 'cta-pulse'}`}
+            >
+              <span className="leading-tight">
+                {loading ? "PROCESSANDO..." : "RESGATAR MEU PROTOCOLO + BÔNUS"}
+              </span>
+              {!loading && <ArrowRight className="h-5 w-5 transition-transform group-hover:translate-x-1" />}
+            </button>
+            <p className="text-xs text-muted-foreground mt-1">
+              🔒 Risco zero · Liberação imediata · Garantia de 7 dias
             </p>
-            <p className="mt-1 text-[10px] font-bold text-muted-foreground">
-              — Sandra Regina Mendes, 45 anos · Campinas/SP
-            </p>
-          </div>
-
-          <div className="mt-6">
-            <CTA sub="🔒 Risco zero · Liberação imediata · Garantia de 7 dias">
-              RESGATAR MEU PROTOCOLO + BÔNUS
-            </CTA>
-          </div>
+          </form>
 
           <button
             onClick={close}
