@@ -407,25 +407,30 @@ function ExitPopup() {
     setLoading(true);
     
     try {
-      // TODO: Substituir pela URL real da API de Email Marketing (ex: ActiveCampaign, Make, RD Station, etc)
-      const API_URL = "https://sua-api-de-email-marketing.com/endpoint";
+      const API_URL = "https://api.sender.net/v2/subscribers";
       const API_TOKEN = "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiNjg0MWI0MGE0ZjE2NmM3Y2UxNzYyNGNjNmYyYzJlOWVmZjQyOTY3Y2MzMjA2OTRkN2VlZWRiNDZkZDJhMDFmMTM4NjVhMDhkODgyYzg4NDAiLCJpYXQiOjE3ODIxNTM4NDEuODEzMTY5LCJuYmYiOjE3ODIxNTM4NDEuODEzMTcxLCJleHAiOjQ5MzU3NTM4NDEuODExMDIxLCJzdWIiOiIxMDgxMDY5Iiwic2NvcGVzIjpbXX0.V7etXKdSkaj_9BgfOykJG0pSGc0yH2iXo5tOBJ3jxSJD8OPQlkjSQNjWh3E-zjLOApUYSI16CCAAKREE9dMwZYCBh3ozRRRwKGsfLBcbOdOzGagpmgwOTpSUedApigwPeiVEWlVQRGZqJiK7Fw4RbjD8JEIfUVI4pCf-f0STcic5MfDS2WDj79qeLg7NMWwsV_BZClkXuwF2IJPtWpi9Yce2U7IjLXKovQ97MxOvXI5UDSkV1tOoDSn92idiKl6372osUcCBrntSGPtWr3-dHOj-q_LSkJnPdZ3lTwZVG_36qWaOd-5iON5bXBNjh1Wg3p3hRp7qLTsPEcuz_fPpdj8Hxs_SPM6giwtTVsJcs7xupFqxJuPJspxLJzY9xsqFyrP4eYz3iv3H8PUVS1UZLeXiZhdiCWlRKlfgOoy61i9DLRofQyO9yBOVwNhiiuqsclyBNcQT5GXzUZjj6bTV2bSdTgO2olBQqgyCz8iuDs7KgsFV7zHagLACc4dMMR7XTSA2lyUpk9iDqFBLHagXnGY-zI5wSPynAONUFSQqdW66X3PzK4IQATK_Cdc5Se9ydO2UbeICibFoi3DCK3Gie2vq5_TKWcFRqkbsOTdwulyAMJBaGHA64qnT3_qgQZKldTg23LKnXpjSylXbhsYix6is1RPjnR4M82GtnlV_YE0";
 
-      // Dispara a requisição para salvar o email em background
+      // Dispara a requisição para salvar o email na Sender.net
       fetch(API_URL, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          "Accept": "application/json",
           "Authorization": `Bearer ${API_TOKEN}`
         },
-        body: JSON.stringify({ email })
+        body: JSON.stringify({ 
+          email: email
+          // O ID público 2399c806983577 não é estritamente necessário no corpo dessa rota da API v2 
+          // a menos que você vá usar para identificar forms específicos no tracking JS deles.
+          // Com o Bearer token, a API já mapeia o lead para a sua conta.
+        })
       }).catch(err => console.error("Erro ao salvar email:", err));
 
       // Dispara os eventos do Pixel
       trackEvent("AddToCart", { content_name: "Método Anti-Inchaço Feminino + Bônus", currency: "BRL", value: 39.90 });
       trackEvent("InitiateCheckout", { content_name: "Método Anti-Inchaço Feminino", currency: "BRL", value: 39.90, num_items: 1 });
 
-      // Redireciona para o checkout independentemente da resposta da API (para não travar o lead)
+      // Redireciona para o checkout imediatamente para não prender o lead
       window.location.href = CHECKOUT_URL;
 
     } catch (error) {
