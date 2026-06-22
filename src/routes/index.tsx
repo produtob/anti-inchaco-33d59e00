@@ -559,7 +559,14 @@ function LandingPage() {
             ))}
           </div>
 
-          {/* Realistic Body Transform (Removed Face BA as it causes distrust) */}
+          <div className="mt-4 overflow-hidden rounded-2xl bg-card shadow-[var(--shadow-soft)] ring-1 ring-border">
+            <img src={ASSETS.faceBA} alt="Antes e depois — redução de retenção e medidas" className="w-full object-cover" loading="eager" fetchPriority="high" width={800} height={800} />
+            <div className="grid grid-cols-2 border-t border-border text-center text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
+              <div className="border-r border-border py-2">Antes</div>
+              <div className="py-2 text-[var(--success)]">Depois</div>
+            </div>
+          </div>
+
           <div className="mt-4 overflow-hidden rounded-2xl bg-card shadow-[var(--shadow-soft)] ring-1 ring-border">
             <img src={ASSETS.bodyTransform} alt="Antes e depois — corpo desinchado" className="w-full object-cover" loading="lazy" width={800} height={800} />
             <div className="grid grid-cols-2 border-t border-border text-center text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
@@ -779,8 +786,16 @@ function LandingPage() {
           <h2 className="mt-3 text-2xl font-bold text-primary-deep sm:text-4xl">Quando o corpo desincha por dentro, o reflexo aparece por fora.</h2>
         </div>
 
-        <div className="mt-8 flex justify-center">
-          <div className="w-full max-w-md overflow-hidden rounded-3xl bg-card shadow-[var(--shadow-premium)] ring-1 ring-border">
+        <div className="mt-8 grid grid-cols-1 gap-6 sm:grid-cols-2">
+          <div className="overflow-hidden rounded-3xl bg-card shadow-[var(--shadow-premium)] ring-1 ring-border">
+            <img src={ASSETS.faceBA} alt="Antes e depois — redução de retenção e medidas" className="w-full object-cover" loading="lazy" width={800} height={800} />
+            <div className="grid grid-cols-2 border-t border-border text-center text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+              <div className="border-r border-border py-2">Antes</div>
+              <div className="py-2 text-[var(--success)]">Depois</div>
+            </div>
+          </div>
+
+          <div className="overflow-hidden rounded-3xl bg-card shadow-[var(--shadow-premium)] ring-1 ring-border">
             <img src={ASSETS.bodyTransform} alt="Antes e depois — corpo desinchado" className="w-full object-cover" loading="lazy" width={800} height={800} />
             <div className="grid grid-cols-2 border-t border-border text-center text-xs font-semibold uppercase tracking-wider text-muted-foreground">
               <div className="border-r border-border py-2">Antes</div>
