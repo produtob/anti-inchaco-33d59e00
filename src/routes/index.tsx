@@ -172,22 +172,27 @@ function StickyCTA() {
     }
   };
   return (
-    <div className="fixed inset-x-0 bottom-0 z-40 border-t border-border bg-background/95 px-3 pb-[calc(env(safe-area-inset-bottom)+8px)] pt-2 backdrop-blur md:px-4">
-      <div className="mx-auto flex max-w-2xl items-center gap-2">
-        <div className="flex flex-1 flex-col leading-tight">
-          <span className="text-[10px] font-semibold uppercase tracking-wide text-muted-foreground">Sistema 14D™</span>
-          <span className="text-[13px] font-bold text-foreground">
-            <span className="line-through opacity-60">R$322</span>{" "}
-            <span className="text-[var(--success)]">R$39,90</span>
-          </span>
+    <div className="fixed inset-x-0 bottom-0 z-40 border-t border-border bg-background/95 px-3 pb-[calc(env(safe-area-inset-bottom)+4px)] pt-2 backdrop-blur md:px-4">
+      <div className="mx-auto flex max-w-2xl flex-col items-center gap-1">
+        <div className="flex w-full items-center gap-2">
+          <div className="flex flex-1 flex-col leading-tight">
+            <span className="text-[10px] font-semibold uppercase tracking-wide text-muted-foreground">Sistema 14D™</span>
+            <span className="text-[13px] font-bold text-foreground">
+              <span className="line-through opacity-60">R$322</span>{" "}
+              <span className="text-[var(--success)]">R$39,90</span>
+            </span>
+          </div>
+          <a
+            href={CHECKOUT_URL}
+            onClick={handleClick}
+            className="cta-pulse flex flex-[1.4] items-center justify-center gap-1.5 rounded-xl bg-[var(--success)] px-3 py-2.5 text-[13px] font-bold leading-tight text-white shadow-lg sm:text-sm"
+          >
+            COMEÇAR AGORA <ArrowRight className="h-4 w-4" />
+          </a>
         </div>
-        <a
-          href={CHECKOUT_URL}
-          onClick={handleClick}
-          className="cta-pulse flex flex-[1.4] items-center justify-center gap-1.5 rounded-xl bg-[var(--success)] px-3 py-3 text-[13px] font-bold leading-tight text-white shadow-lg sm:text-sm"
-        >
-          COMEÇAR AGORA <ArrowRight className="h-4 w-4" />
-        </a>
+        <p className="text-[9px] text-muted-foreground font-medium">
+          🔒 Pagamento 100% seguro · Acesso imediato · 7 dias de garantia
+        </p>
       </div>
     </div>
   );
@@ -223,233 +228,229 @@ function FAQItem({ q, a }: { q: string; a: string }) {
   );
 }
 
-/* ---------- Quiz Popup (lead capture) ---------- */
+/* ---------- Exit Intent Hook & Optimization Components ---------- */
 
-const QUIZ_KEY = "mai_quiz_seen_v1";
-const QUIZ_QUESTIONS = [
-  {
-    q: "Em que momento do dia você sente MAIS inchaço?",
-    options: [
-      { v: "tarde", t: "Da tarde em diante", tag: "retencao" },
-      { v: "refeicao", t: "Logo após as refeições", tag: "inflamacao" },
-      { v: "manha", t: "Acordo já estufada", tag: "intestino" },
-    ],
-  },
-  {
-    q: "O que você sente com mais frequência?",
-    options: [
-      { v: "pernas", t: "Pernas pesadas / anel marcando", tag: "retencao" },
-      { v: "gases", t: "Gases e empachamento", tag: "inflamacao" },
-      { v: "preso", t: "Intestino preso ou irregular", tag: "intestino" },
-    ],
-  },
-  {
-    q: "Sua roupa aperta mais quando?",
-    options: [
-      { v: "tpm", t: "Perto do ciclo / TPM", tag: "retencao" },
-      { v: "comer", t: "Depois de comer", tag: "inflamacao" },
-      { v: "sempre", t: "Quase todo dia", tag: "intestino" },
-    ],
-  },
-];
+function useExitIntent(delayMs = 8000) {
+  const [shouldShow, setShouldShow] = useState(false);
+  const hasTriggered = useRef(false);
+  const timeElapsed = useRef(false);
 
-const QUIZ_RESULTS: Record<string, { title: string; desc: string }> = {
-  retencao: {
-    title: "Tipo 1 — Inchaço por Retenção Hídrica",
-    desc: "Seu corpo está segurando líquido nos tecidos. O Protocolo 14D™ age direto na drenagem e no equilíbrio hormonal feminino.",
-  },
-  inflamacao: {
-    title: "Tipo 2 — Inchaço Inflamatório",
-    desc: "Alimentos pró-inflamatórios estão mantendo seu abdômen distendido. O cardápio desinflamatório do Sistema 14D™ corrige isso.",
-  },
-  intestino: {
-    title: "Tipo 3 — Inchaço por Intestino Lento",
-    desc: "Seu trânsito intestinal está travado. O Guia do Intestino Funcional do Sistema 14D™ destrava em poucos dias.",
-  },
-};
-
-function QuizPopup() {
-  const [open, setOpen] = useState(false);
-  const [step, setStep] = useState(0);
-  const [tags, setTags] = useState<string[]>([]);
-  const [email, setEmail] = useState("");
-  const [emailErr, setEmailErr] = useState("");
-  const [done, setDone] = useState(false);
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      timeElapsed.current = true;
+    }, delayMs);
+    return () => clearTimeout(timer);
+  }, [delayMs]);
 
   useEffect(() => {
     if (typeof window === "undefined") return;
-    if (sessionStorage.getItem(QUIZ_KEY)) return;
-    const onLeave = (e: MouseEvent) => {
-      if (e.clientY <= 0 && !sessionStorage.getItem(QUIZ_KEY)) setOpen(true);
-    };
-    document.addEventListener("mouseleave", onLeave);
-    return () => { document.removeEventListener("mouseleave", onLeave); };
-  }, []);
 
-  useEffect(() => {
-    if (open) {
-      document.body.style.overflow = "hidden";
-      try {
-        trackEvent("ViewContent", { content_name: "Quiz Anti-Inchaço" });
-      } catch (error) {
-        if (import.meta.env.DEV) console.warn("Quiz tracking failed", error);
-      }
-    } else {
-      document.body.style.overflow = "";
-    }
-    return () => { document.body.style.overflow = ""; };
-  }, [open]);
-
-  const close = () => {
-    sessionStorage.setItem(QUIZ_KEY, "1");
-    setOpen(false);
-  };
-
-  const pick = (tag: string) => {
-    const next = [...tags, tag];
-    setTags(next);
-    if (step < QUIZ_QUESTIONS.length - 1) setStep(step + 1);
-    else setStep(QUIZ_QUESTIONS.length); // move to capture
-  };
-
-  const dominant = (() => {
-    const c: Record<string, number> = {};
-    tags.forEach((t) => (c[t] = (c[t] || 0) + 1));
-    return Object.entries(c).sort((a, b) => b[1] - a[1])[0]?.[0] || "retencao";
-  })();
-
-  const submitEmail = (e: React.FormEvent) => {
-    e.preventDefault();
-    const trimmed = email.trim().toLowerCase();
-    const valid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(trimmed);
-    if (!valid) {
-      setEmailErr("Digite um e-mail válido.");
+    const seen = sessionStorage.getItem("anti_inchaco_exit_seen");
+    if (seen) {
+      hasTriggered.current = true;
       return;
     }
-    setEmailErr("");
-    try {
-      localStorage.setItem("mai_lead", JSON.stringify({ email: trimmed, type: dominant, ts: Date.now() }));
-      trackEvent("Lead", { content_name: "Quiz Anti-Inchaço", content_category: dominant });
-    } catch (error) {
-      if (import.meta.env.DEV) console.warn("Lead capture failed", error);
+
+    const triggerPopup = () => {
+      if (!timeElapsed.current || hasTriggered.current) return;
+      hasTriggered.current = true;
+      sessionStorage.setItem("anti_inchaco_exit_seen", "true");
+      setShouldShow(true);
+    };
+
+    const handleMouseLeave = (e: MouseEvent) => {
+      if (e.clientY <= 5) {
+        triggerPopup();
+      }
+    };
+
+    window.history.pushState({ exitIntent: true }, "");
+    const handlePopState = (e: PopStateEvent) => {
+      triggerPopup();
+    };
+
+    document.addEventListener("mouseleave", handleMouseLeave);
+    window.addEventListener("popstate", handlePopState);
+
+    return () => {
+      document.removeEventListener("mouseleave", handleMouseLeave);
+      window.removeEventListener("popstate", handlePopState);
+    };
+  }, []);
+
+  return { shouldShow, close: () => setShouldShow(false) };
+}
+
+function UrgencyTimer() {
+  const [timeLeft, setTimeLeft] = useState<number>(15 * 60);
+  const [isExpired, setIsExpired] = useState(false);
+
+  useEffect(() => {
+    const STORAGE_KEY = "anti_inchaco_timer_end";
+    const now = Date.now();
+    const endTimeStr = localStorage.getItem(STORAGE_KEY);
+    let endTime = endTimeStr ? parseInt(endTimeStr, 10) : 0;
+
+    if (!endTime || now > endTime + 2 * 60 * 60 * 1000) {
+      endTime = now + 15 * 60 * 1000;
+      localStorage.setItem(STORAGE_KEY, endTime.toString());
     }
-    sessionStorage.setItem(QUIZ_KEY, "1");
-    setDone(true);
-  };
 
-  if (!open) return null;
+    const interval = setInterval(() => {
+      const currentNow = Date.now();
+      const remaining = Math.max(0, Math.ceil((endTime - currentNow) / 1000));
+      
+      if (remaining === 0) {
+        setIsExpired(true);
+        setTimeLeft(0);
+        clearInterval(interval);
+      } else {
+        setIsExpired(false);
+        setTimeLeft(remaining);
+      }
+    }, 1000);
 
-  const result = QUIZ_RESULTS[dominant];
-  const totalSteps = QUIZ_QUESTIONS.length + 1;
-  const currentStep = Math.min(step, QUIZ_QUESTIONS.length);
-  const progress = done ? 100 : ((currentStep) / totalSteps) * 100;
+    return () => clearInterval(interval);
+  }, []);
+
+  const minutes = Math.floor(timeLeft / 60);
+  const seconds = timeLeft % 60;
+  const timeString = `${minutes.toString().padStart(2, "0")}:${seconds.toString().padStart(2, "0")}`;
+
+  let textColor = "text-[var(--success)]";
+  if (timeLeft < 60) {
+    textColor = "text-[var(--destructive)] animate-pulse";
+  } else if (timeLeft < 300) {
+    textColor = "text-[color:oklch(0.72_0.12_80)]";
+  }
 
   return (
-    <div className="fixed inset-x-0 bottom-0 z-[60] flex items-end justify-center px-3 pb-3 pointer-events-none sm:inset-0 sm:items-end sm:justify-end sm:p-6">
-      <div className="relative w-full max-w-md overflow-hidden rounded-2xl bg-card shadow-[var(--shadow-premium)] ring-1 ring-border pointer-events-auto animate-in slide-in-from-bottom-8 fade-in duration-300">
+    <div className="mx-auto my-6 max-w-xl rounded-2xl bg-card p-5 text-center shadow-[var(--shadow-soft)] ring-1 ring-border">
+      {isExpired ? (
+        <div className="space-y-1">
+          <p className="text-sm font-bold text-[var(--destructive)]">
+            ⚠️ O tempo da sua oferta especial expirou!
+          </p>
+          <p className="text-xs text-muted-foreground leading-relaxed">
+            Desconto expirado — mas o seu acesso ainda está disponível por R$ 39,90 por mais alguns instantes enquanto o lote de servidores de liberação não é totalmente preenchido.
+          </p>
+        </div>
+      ) : (
+        <div>
+          <p className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground">
+            Sua oferta especial expira em:
+          </p>
+          <p className={`mt-1 font-display text-4xl font-extrabold ${textColor}`}>
+            {timeString}
+          </p>
+          <p className="mt-2 text-xs leading-relaxed text-muted-foreground">
+            Liberamos um lote promocional de R$ 39,90 para ajudar as primeiras inscritas de hoje a iniciarem o protocolo sem barreiras. Garanta sua vaga com desconto antes que o relógio zere e o sistema retorne automaticamente para o preço original de R$ 97.
+          </p>
+        </div>
+      )}
+    </div>
+  );
+}
+
+function PostFaqCTA() {
+  return (
+    <div className="mx-auto mt-10 max-w-xl rounded-2xl bg-[var(--primary-soft)] p-6 text-center ring-1 ring-[color-mix(in_oklab,var(--primary)_25%,transparent)] shadow-[var(--shadow-soft)]">
+      <p className="text-xs font-bold uppercase tracking-wider text-primary-deep">
+        Ainda está em dúvida se é para você?
+      </p>
+      <h3 className="mt-2 font-display text-lg font-bold text-primary-deep sm:text-xl">
+        Se você leu as respostas acima e ainda está com receio, pense nisso:
+      </h3>
+      <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
+        O preço de R$ 39,90 é menor do que uma única xícara de café por dia durante o protocolo. E se você não se sentir mais leve em 7 dias, é só nos mandar uma mensagem que devolvemos todo o seu dinheiro. O risco é 100% nosso.
+      </p>
+      
+      <div className="mt-5 flex items-center justify-center gap-3">
+        <div className="grid h-12 w-12 shrink-0 place-items-center rounded-full bg-[var(--gold)] text-white shadow-md">
+          <ShieldCheck className="h-6 w-6" />
+        </div>
+        <div className="text-left text-xs">
+          <p className="font-bold text-foreground">Garantia Blindada de 7 dias</p>
+          <p className="text-muted-foreground">Sem burocracia, devolução direta em um clique.</p>
+        </div>
+      </div>
+
+      <div className="mt-5">
+        <CTA sub="🔒 dados criptografados · liberação na hora · garantia incondicional">
+          TESTAR O PROTOCOLO POR 7 DIAS
+        </CTA>
+      </div>
+    </div>
+  );
+}
+
+function ExitPopup() {
+  const { shouldShow, close } = useExitIntent(8000);
+
+  if (!shouldShow) return null;
+
+  return (
+    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+      <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={close} />
+      
+      <div className="relative w-full max-w-md overflow-hidden rounded-3xl bg-card p-6 shadow-[var(--shadow-premium)] ring-1 ring-border animate-in fade-in zoom-in-95 duration-200">
         <button
           onClick={close}
           aria-label="Fechar"
-          className="absolute right-2 top-2 z-10 grid h-8 w-8 place-items-center rounded-full bg-background/80 text-muted-foreground ring-1 ring-border hover:text-foreground"
+          className="absolute right-3 top-3 text-muted-foreground hover:text-foreground"
         >
-          <X className="h-4 w-4" />
+          <X className="h-5 w-5" />
         </button>
 
-        <div className="h-1 w-full bg-border">
-          <div className="h-full bg-[var(--success)] transition-all" style={{ width: `${progress}%` }} />
-        </div>
+        <div className="text-center">
+          <span className="inline-flex items-center gap-1.5 rounded-full bg-[oklch(0.97_0.04_85)] px-3 py-1 text-[11px] font-semibold uppercase tracking-wider text-[oklch(0.45_0.1_75)] ring-1 ring-[var(--gold-soft)]">
+            🎁 PRESENTE SURPRESA LIBERADO
+          </span>
+          
+          <h3 className="mt-3 font-display text-xl font-bold leading-tight text-primary-deep">
+            Espere! Não vá embora com a sensação de barriga pesada...
+          </h3>
+          
+          <p className="mt-3 text-xs leading-relaxed text-muted-foreground">
+            Se você garantir seu acesso nos próximos minutos, vamos adicionar de graça o nosso guia secreto:
+          </p>
 
-        {!done && step < QUIZ_QUESTIONS.length && (
-          <div className="p-5 sm:p-6">
-            <div className="flex items-center justify-center gap-1.5">
-              <Pill tone="gold"><AlertTriangle className="h-3 w-3" /> ESPERE! Não vá ainda...</Pill>
-            </div>
-            <h3 className="mt-3 text-center font-display text-lg font-bold leading-tight text-primary-deep sm:text-xl">
-              Faça o diagnóstico gratuito e descubra qual dos <span className="text-[var(--destructive)]">3 tipos de inchaço</span> está travando seu corpo
-            </h3>
-            <p className="mt-1 text-center text-xs text-muted-foreground">Pergunta {step + 1} de {QUIZ_QUESTIONS.length}</p>
-
-            <p className="mt-4 text-sm font-semibold text-foreground sm:text-base">{QUIZ_QUESTIONS[step].q}</p>
-            <div className="mt-3 space-y-2">
-              {QUIZ_QUESTIONS[step].options.map((o) => (
-                <button
-                  key={o.v}
-                  onClick={() => pick(o.tag)}
-                  className="flex w-full items-center justify-between gap-3 rounded-xl border-2 border-border bg-background px-4 py-3 text-left text-sm font-medium text-foreground transition active:scale-[0.99] hover:border-primary hover:bg-[var(--primary-soft)]"
-                >
-                  <span>{o.t}</span>
-                  <ArrowRight className="h-4 w-4 shrink-0 text-primary" />
-                </button>
-              ))}
-            </div>
-          </div>
-        )}
-
-        {!done && step >= QUIZ_QUESTIONS.length && (
-          <div className="p-5 sm:p-6">
-            <div className="flex items-center justify-center">
-              <Pill><Mail className="h-3 w-3" /> Último passo</Pill>
-            </div>
-            <h3 className="mt-3 text-center font-display text-lg font-bold leading-tight text-primary-deep sm:text-xl">
-              Pronto! Diagnosticamos o seu caso.
-            </h3>
-            <p className="mt-2 text-center text-sm text-muted-foreground">
-              A resposta exata de como reverter o seu inchaço está a um passo. Digite seu e-mail para receber seu <strong className="text-foreground">diagnóstico completo</strong> e uma <strong className="text-[var(--success)]">oferta de resgate exclusiva</strong> do Sistema 14D™.
-            </p>
-            <form onSubmit={submitEmail} className="mt-4 space-y-3">
-              <div>
-                <label htmlFor="email" className="text-xs font-semibold text-foreground">Seu e-mail</label>
-                <input
-                  id="email"
-                  type="email"
-                  inputMode="email"
-                  autoComplete="email"
-                  placeholder="seu@email.com"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  className="mt-1 w-full rounded-xl border-2 border-border bg-background px-4 py-3 text-base font-medium text-foreground outline-none ring-0 focus:border-primary"
-                  required
-                />
-                {emailErr && <p className="mt-1 text-xs text-[var(--destructive)]">{emailErr}</p>}
+          <div className="mt-4 rounded-2xl bg-[var(--primary-soft)] p-4 text-left ring-1 ring-[color-mix(in_oklab,var(--primary)_20%,transparent)]">
+            <div className="flex gap-3">
+              <div className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-[var(--gold)] text-white shadow-md">
+                <Gift className="h-5 w-5" />
               </div>
-              <button
-                type="submit"
-                className="cta-pulse flex w-full items-center justify-center gap-2 rounded-xl bg-[var(--success)] px-5 py-3.5 text-sm font-bold text-white shadow-[var(--shadow-premium)]"
-              >
-                Ver meu resultado <ArrowRight className="h-4 w-4" />
-              </button>
-              <p className="text-center text-[10px] text-muted-foreground">Seus dados estão seguros · Sem spam</p>
-            </form>
+              <div>
+                <p className="text-sm font-bold text-primary-deep">Suco Desinflamatório Noturno™</p>
+                <p className="mt-1 text-xs text-muted-foreground leading-snug">
+                  Uma receita rápida de 3 ingredientes para tomar antes de deitar e acordar visivelmente mais leve de manhã. (Vendido por R$ 27 sozinho).
+                </p>
+              </div>
+            </div>
           </div>
-        )}
 
-        {done && (
-          <div className="p-5 sm:p-6">
-            <div className="flex items-center justify-center">
-              <Pill tone="gold"><Sparkles className="h-3 w-3" /> Resultado pronto</Pill>
-            </div>
-            <h3 className="mt-3 text-center font-display text-xl font-bold leading-tight text-primary-deep">
-              {result.title}
-            </h3>
-            <p className="mt-2 text-center text-sm leading-relaxed text-muted-foreground">{result.desc}</p>
-            <div className="mt-4 rounded-xl bg-[var(--primary-soft)] p-3 text-center text-xs text-primary-deep ring-1 ring-[color-mix(in_oklab,var(--primary)_25%,transparent)]">
-              👉 Aplicar o protocolo agora com <strong>50% OFF</strong> — apenas <strong className="text-[var(--success)]">R$ 39,90</strong>
-            </div>
-            <a
-              href={CHECKOUT_URL}
-              onClick={() => {
-                trackEvent("AddToCart", { content_name: "Método Anti-Inchaço Feminino", currency: "BRL", value: 39.90 });
-                trackEvent("InitiateCheckout", { content_name: "Método Anti-Inchaço Feminino", currency: "BRL", value: 39.90, num_items: 1 });
-              }}
-              className="cta-pulse mt-3 flex w-full items-center justify-center gap-2 rounded-xl bg-[var(--success)] px-5 py-3.5 text-sm font-bold text-white shadow-[var(--shadow-premium)]"
-            >
-              Quero começar meu protocolo <ArrowRight className="h-4 w-4" />
-            </a>
-            <button onClick={close} className="mt-2 w-full text-center text-[11px] text-muted-foreground underline">
-              Continuar lendo a página
-            </button>
+          <div className="mt-4 border-l-2 border-[var(--gold)] pl-3 text-left">
+            <p className="text-xs italic text-foreground/80 leading-snug">
+              "No 4º dia minha barriga murchou de um jeito que eu não via há anos."
+            </p>
+            <p className="mt-1 text-[10px] font-bold text-muted-foreground">
+              — Sandra Regina Mendes, 45 anos · Campinas/SP
+            </p>
           </div>
-        )}
+
+          <div className="mt-6">
+            <CTA sub="🔒 Risco zero · Liberação imediata · Garantia de 7 dias">
+              RESGATAR MEU PROTOCOLO + BÔNUS
+            </CTA>
+          </div>
+
+          <button
+            onClick={close}
+            className="mt-4 text-[10.5px] font-medium text-muted-foreground hover:text-[var(--destructive)] underline transition-colors"
+          >
+            Não, prefiro continuar com a barriga estufada e roupas apertando
+          </button>
+        </div>
       </div>
     </div>
   );
@@ -486,7 +487,7 @@ function LandingPage() {
         <div className="mx-auto flex max-w-3xl flex-wrap items-center justify-center gap-x-4 gap-y-1 px-4 py-2 text-[11px] font-medium tracking-wide sm:text-xs">
           <span className="inline-flex items-center gap-1"><Star className="h-3.5 w-3.5 fill-[var(--gold)] text-[var(--gold)]" /> <strong>4,9/5</strong></span>
           <span className="hidden h-3 w-px bg-white/30 sm:inline-block" />
-          <span className="inline-flex items-center gap-1"><Sparkles className="h-3.5 w-3.5 text-[var(--gold-soft)]" /> <strong>+12.000</strong> mulheres no protocolo</span>
+          <span className="inline-flex items-center gap-1"><Sparkles className="h-3.5 w-3.5 text-[var(--gold-soft)]" /> <strong>12.847</strong> mulheres no protocolo</span>
           <span className="hidden h-3 w-px bg-white/30 sm:inline-block" />
           <span className="inline-flex items-center gap-1"><ShieldCheck className="h-3.5 w-3.5 text-[var(--gold-soft)]" /> Garantia 7 dias</span>
           <span className="hidden h-3 w-px bg-white/30 sm:inline-block" />
@@ -509,26 +510,29 @@ function LandingPage() {
               <Sparkles className="h-3 w-3" /> Protocolo Feminino · 14 dias guiados
             </Pill>
             <h1 className="text-balance text-[26px] font-bold leading-[1.08] text-primary-deep sm:text-5xl">
-              Sua barriga pode estar inchada por <em className="not-italic text-[var(--destructive)]">retenção e inflamação</em> — não por gordura.
+              Murcha o inchaço hormonal em 14 dias sem passar fome.
             </h1>
             <p className="max-w-xl text-balance text-[13px] leading-snug text-muted-foreground sm:text-base">
-              Descubra o <strong className="text-foreground">protocolo feminino de 14 dias</strong> que já ajudou mais de <strong className="text-foreground">12.000 mulheres</strong> a se sentirem leves novamente.
+              O protocolo diário guiado que ativa o trânsito intestinal e elimina retenção após os 35 anos, ajudando <strong className="text-foreground">12.847 mulheres</strong> a se sentirem leves novamente.
             </p>
 
             <div className="flex flex-wrap items-center justify-center gap-x-3 gap-y-1 pt-0.5 text-[11px] text-muted-foreground sm:text-xs">
               <span className="inline-flex items-center gap-1"><Stars /> <strong className="text-foreground">4,9</strong>/5</span>
               <span className="h-3 w-px bg-border" />
-              <span><strong className="text-foreground">+12.000</strong> mulheres no protocolo 14D™</span>
+              <span><strong className="text-foreground">12.847</strong> mulheres no protocolo 14D™</span>
             </div>
           </div>
 
           {/* VSL */}
           <div className="mt-3 sm:mt-5">
             <VSLPlayer />
+            <p className="mt-2 text-center text-xs font-semibold text-primary-deep animate-pulse">
+              👉 Assista os primeiros 2 minutos — você vai se reconhecer
+            </p>
           </div>
 
           <div className="mt-4">
-            <CTA sub="Acesso imediato · Pagamento 100% seguro">QUERO ME SENTIR LEVE NOVAMENTE</CTA>
+            <CTA sub="🔒 Pagamento 100% seguro · Acesso imediato · Garantia de 7 dias">QUERO ME SENTIR LEVE NOVAMENTE</CTA>
             <p className="mt-2 text-center text-[11px] text-muted-foreground">
               Menos de <strong className="text-foreground">R$ 2,85/dia</strong> durante o protocolo · ou <strong className="text-foreground">4x de R$11,07</strong>
             </p>
@@ -555,14 +559,7 @@ function LandingPage() {
             ))}
           </div>
 
-          <div className="mt-4 overflow-hidden rounded-2xl bg-card shadow-[var(--shadow-soft)] ring-1 ring-border">
-            <img src={ASSETS.faceBA} alt="Antes e depois — rosto desinchado" className="w-full object-cover" loading="eager" fetchPriority="high" width={800} height={400} />
-            <div className="grid grid-cols-2 border-t border-border text-center text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
-              <div className="border-r border-border py-2">Antes</div>
-              <div className="py-2 text-[var(--success)]">Depois</div>
-            </div>
-          </div>
-          
+          {/* Realistic Body Transform (Removed Face BA as it causes distrust) */}
           <div className="mt-4 overflow-hidden rounded-2xl bg-card shadow-[var(--shadow-soft)] ring-1 ring-border">
             <img src={ASSETS.bodyTransform} alt="Antes e depois — corpo desinchado" className="w-full object-cover" loading="lazy" width={800} height={800} />
             <div className="grid grid-cols-2 border-t border-border text-center text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
@@ -673,7 +670,7 @@ function LandingPage() {
           </div>
 
           <div className="mt-10">
-            <CTA>QUERO COMEÇAR MEUS 14 DIAS</CTA>
+            <CTA sub="🔒 checkout seguro cakto · download imediato · risco zero">QUERO COMEÇAR MEUS 14 DIAS</CTA>
           </div>
         </div>
       </section>
@@ -782,16 +779,8 @@ function LandingPage() {
           <h2 className="mt-3 text-2xl font-bold text-primary-deep sm:text-4xl">Quando o corpo desincha por dentro, o reflexo aparece por fora.</h2>
         </div>
 
-        <div className="mt-8 grid grid-cols-1 gap-6 sm:grid-cols-2">
-          <div className="overflow-hidden rounded-3xl bg-card shadow-[var(--shadow-premium)] ring-1 ring-border">
-            <img src={ASSETS.faceBA} alt="Antes e depois — rosto desinchado" className="w-full object-cover" loading="lazy" width={800} height={400} />
-            <div className="grid grid-cols-2 border-t border-border text-center text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-              <div className="border-r border-border py-2">Antes</div>
-              <div className="py-2 text-[var(--success)]">Depois</div>
-            </div>
-          </div>
-
-          <div className="overflow-hidden rounded-3xl bg-card shadow-[var(--shadow-premium)] ring-1 ring-border">
+        <div className="mt-8 flex justify-center">
+          <div className="w-full max-w-md overflow-hidden rounded-3xl bg-card shadow-[var(--shadow-premium)] ring-1 ring-border">
             <img src={ASSETS.bodyTransform} alt="Antes e depois — corpo desinchado" className="w-full object-cover" loading="lazy" width={800} height={800} />
             <div className="grid grid-cols-2 border-t border-border text-center text-xs font-semibold uppercase tracking-wider text-muted-foreground">
               <div className="border-r border-border py-2">Antes</div>
@@ -799,7 +788,6 @@ function LandingPage() {
             </div>
           </div>
         </div>
-
 
         <p className="mt-3 text-center text-[11px] italic text-muted-foreground">*Resultados podem variar conforme rotina, alimentação e organismo de cada mulher.</p>
       </section>
@@ -810,10 +798,10 @@ function LandingPage() {
           <div className="flex flex-col items-center gap-2">
             <Stars />
             <p className="text-5xl font-bold font-display">4,9</p>
-            <p className="text-sm opacity-90">Avaliação média de mais de <strong>12.000 mulheres</strong></p>
+            <p className="text-sm opacity-90">Avaliação média de <strong>12.847 mulheres</strong></p>
           </div>
           <p className="mx-auto mt-5 max-w-xl text-sm leading-relaxed opacity-90 sm:text-base">
-            Mais de <strong className="text-[var(--gold-soft)]">12.000 mulheres</strong> já iniciaram o protocolo 14D™ e registraram melhorias em:
+            <strong>12.847 mulheres</strong> já iniciaram o protocolo 14D™ e registraram melhorias em:
           </p>
           <div className="mx-auto mt-4 grid max-w-xl grid-cols-2 gap-2 text-left text-xs sm:grid-cols-5 sm:text-[11px]">
             {["Retenção", "Digestão", "Conforto abdominal", "Sensação de leveza", "Autoestima"].map((b) => (
@@ -842,14 +830,34 @@ function LandingPage() {
 
         <div className="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-2">
           {[
-            { n: "Aline R.", age: 38, t: "Em 6 dias já notei diferença", d: "Minha barriga inchava todo fim de tarde. Comecei o protocolo na segunda e na sexta eu já consegui fechar a calça que estava guardada." },
-            { n: "Patrícia M.", age: 42, t: "Sumiu o peso depois do almoço", d: "Eu vivia empachada. Hoje almoço bem, tomo água do jeito que o método ensina e me sinto leve a tarde inteira." },
-            { n: "Cláudia S.", age: 45, t: "O intestino voltou a funcionar", d: "Era de 3 em 3 dias, com muito desconforto. Em duas semanas virou rotina diária, sem forçar nada." },
-            { n: "Renata L.", age: 47, t: "Voltei a vestir meu jeans", d: "Estava parado no armário há quase um ano. Não é mágica, é seguir o passo a passo. Recomendo demais." },
-            { n: "Sandra T.", age: 51, t: "Mais energia que aos 40", d: "Achei que era idade, era inflamação. Reduzi inchaço, perdi medidas e minha disposição mudou completamente." },
-            { n: "Juliana B.", age: 39, t: "Foto sem prender a barriga", d: "Pela primeira vez em anos tirei foto na praia sem segurar. Confiança não tem preço." },
-            { n: "Mariana C.", age: 44, t: "Saí da menopausa inchada", d: "Tudo o que eu comia parecia inflamar. O cardápio desinflamatório foi o que finalmente funcionou pra mim." },
-            { n: "Beatriz N.", age: 36, t: "Drenagem que faz diferença", d: "Os rituais são simples e rápidos. Em poucos dias o rosto desinchou e a barriga deu uma baixada visível." },
+            {
+              n: "Márcia Santos",
+              age: 41,
+              location: "Porto Velho/RO",
+              t: "Meu rosto desinchou no 3º dia",
+              d: "Eu acordava parecendo que não dormia há dias, com o rosto tão inchado que mal conseguia abrir os olhos direito. Já tinha tentado de tudo: bebia litros de água, comprava cremes caros de farmácia e nada resolvia. Resolvi testar o ritual de drenagem rápida do método logo de manhã. No 3º dia o inchaço nos olhos sumiu e no 9º dia uma colega do trabalho me perguntou qual procedimento estético eu tinha feito na bochecha. Estou me sentindo super leve e com o rosto fininho de novo."
+            },
+            {
+              n: "Maria José Vieira",
+              age: 48,
+              location: "Caruaru/PE",
+              t: "Pés e pernas leves de novo",
+              d: "Chegava 5 horas da tarde e eu não aguentava de dor nas pernas. Meu tornozelo ficava tão inchado que a meia deixava aquela marca funda na pele. Já tinha tomado litros de chá de cavalinha e até usei meia de compressão no calor, mas só aliviava na hora. Comecei a seguir o ritual drenante deles antes de deitar e usei a lista de compras para tirar o que me inflamava. Em 6 dias o peso nas pernas sumiu e no 12º dia meus sapatos de sair voltaram a entrar com folga, sem apertar nada."
+            },
+            {
+              n: "Sandra Regina Mendes",
+              age: 45,
+              location: "Campinas/SP",
+              t: "Minha calça 42 fechou sem sufoco",
+              d: "Eu almoçava e parecia que tinha engolido uma bexiga cheia. Minha barriga estufava tanto que eu precisava abrir o botão da calça escondida no escritório. Cortei pão, tirei o leite, mas continuava igual. Quando comecei o protocolo, no 4º dia minha barriga murchou de um jeito que eu não via há anos. E no 10º dia eu consegui vestir e fechar minha calça jeans favorita tamanho 42 sem precisar deitar na cama ou prender a respiração. Dá um alívio tão grande se sentir leve."
+            },
+            {
+              n: "Regina Célia Becker",
+              age: 53,
+              location: "Blumenau/SC",
+              t: "Os anéis voltaram a girar no dedo",
+              d: "Depois que entrei na menopausa, meu corpo virou uma esponja. Eu acordava com as mãos travadas, os dedos pareciam linguiças de tão inchados e meus anéis não entravam mais. Gastei uma fortuna com drenagem em clínica, mas no dia seguinte inchava tudo de novo. Com o guia do intestino funcional e o ritual matinal do método, em só 5 dias meus anéis voltaram a girar no dedo. Hoje estou no 14º dia e parece que limpei meu corpo por completo, os dedos estão fininhos e as dores nas juntas sumiram."
+            }
           ].map((t) => (
             <div key={t.n} className="rounded-2xl bg-card p-5 shadow-[var(--shadow-soft)] ring-1 ring-border">
               <Stars />
@@ -861,7 +869,7 @@ function LandingPage() {
                 </div>
                 <div className="text-xs">
                   <p className="font-semibold text-foreground">{t.n}</p>
-                  <p className="text-muted-foreground">{t.age} anos · Compra verificada</p>
+                  <p className="text-muted-foreground">{t.age} anos · {t.location} · Compra verificada</p>
                 </div>
               </div>
             </div>
@@ -943,8 +951,13 @@ function LandingPage() {
         </div>
       </section>
 
+      {/* TIMER DE URGÊNCIA */}
+      <div className="mx-auto max-w-3xl px-4 mt-20">
+        <UrgencyTimer />
+      </div>
+
       {/* OFERTA */}
-      <section id="oferta" className="mt-20 px-4">
+      <section id="oferta" className="mt-10 px-4">
         <div className="mx-auto max-w-3xl">
           <div className="text-center">
             <Pill tone="gold"><Sparkles className="h-3 w-3" /> Sistema 14D™ · Liberação imediata</Pill>
@@ -1009,7 +1022,7 @@ function LandingPage() {
               </p>
 
               <div className="mt-6">
-                <CTA sub="🔒 Pagamento 100% seguro · Acesso imediato">QUERO ACESSO IMEDIATO</CTA>
+                <CTA sub="🔒 dados criptografados · liberação na hora · garantia incondicional">QUERO ACESSO IMEDIATO</CTA>
               </div>
 
               <div className="mx-auto mt-5 flex max-w-md items-start gap-2 rounded-xl bg-white/5 px-4 py-3 text-left text-[11px] leading-relaxed text-white/90 ring-1 ring-white/15">
@@ -1055,6 +1068,9 @@ function LandingPage() {
         <div className="mt-6 space-y-3">
           {faqs.map((f) => <FAQItem key={f.q} q={f.q} a={f.a} />)}
         </div>
+
+        {/* CTA APÓS FAQ */}
+        <PostFaqCTA />
       </section>
 
       {/* WHATSAPP SUPPORT */}
@@ -1085,10 +1101,10 @@ function LandingPage() {
           <Flower2 className="mx-auto h-10 w-10 text-[var(--gold-soft)]" />
           <h2 className="mt-3 font-display text-2xl font-bold sm:text-4xl">Você pode continuar lidando com o inchaço todos os dias…</h2>
           <p className="mx-auto mt-3 max-w-xl text-sm opacity-95 sm:text-base">
-            …ou começar hoje o método que já ajudou <strong className="text-[var(--gold-soft)]">mais de 12.000 mulheres</strong> a recuperar a leveza, a confiança e o orgulho de se olhar no espelho.
+            …ou começar hoje o método que já ajudou <strong className="text-[var(--gold-soft)]">12.847 mulheres</strong> a recuperar a leveza, a confiança e o orgulho de se olhar no espelho.
           </p>
           <div className="mt-6">
-            <CTA sub="Acesso imediato após a confirmação do pagamento">COMEÇAR MEU MÉTODO AGORA</CTA>
+            <CTA sub="🔒 checkout seguro cakto · liberação na hora · 7 dias de garantia">COMEÇAR MEU MÉTODO AGORA</CTA>
           </div>
         </div>
       </section>
@@ -1108,7 +1124,7 @@ function LandingPage() {
       </footer>
 
       <StickyCTA />
-      <QuizPopup />
+      <ExitPopup />
     </div>
   );
 }
