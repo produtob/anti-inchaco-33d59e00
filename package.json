@@ -5,8 +5,10 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "prebuild": "node scripts/check-config.mjs",
     "build": "vite build",
     "build:dev": "vite build --mode development",
+    "check:config": "node scripts/check-config.mjs",
     "preview": "vite preview",
     "lint": "eslint .",
     "format": "prettier --write ."
