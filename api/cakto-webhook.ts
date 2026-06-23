@@ -1,4 +1,5 @@
 import crypto from "node:crypto";
+import { seenBefore } from "./_lib/dedup";
 
 // Vercel Serverless Function — Node runtime
 export const config = { runtime: "nodejs" };
@@ -96,8 +97,29 @@ export default async function handler(req: any, res: any) {
     return res.status(422).json({ error: "unsupported_event", event });
   }
 
-  // TODO: persistir/encaminhar o evento conforme a regra de negócio.
-  console.log("[cakto-webhook] accepted", { event, id: payload?.id ?? null });
+  // Idempotência: usa delivery/event id do header ou do payload.
+  const deliveryId = String(
+    req.headers["x-cakto-delivery-id"] ||
+      req.headers["x-delivery-id"] ||
+      req.headers["x-event-id"] ||
+      payload?.delivery_id ||
+      payload?.id ||
+      ""
+  ).trim();
 
-  return res.status(200).json({ received: true, event });
+  if (!deliveryId) {
+    // Fallback: hash do corpo para evitar duplicatas exatas.
+    const bodyHash = crypto.createHash("sha256").update(raw).digest("hex");
+    if (seenBefore(`body:${bodyHash}`)) {
+      return res.status(200).json({ received: true, duplicate: true, event });
+    }
+  } else if (seenBefore(`id:${deliveryId}`)) {
+    console.log("[cakto-webhook] duplicate ignored", { event, deliveryId });
+    return res.status(200).json({ received: true, duplicate: true, event, deliveryId });
+  }
+
+  // TODO: persistir/encaminhar o evento conforme a regra de negócio.
+  console.log("[cakto-webhook] accepted", { event, id: deliveryId || payload?.id || null });
+
+  return res.status(200).json({ received: true, event, deliveryId: deliveryId || null });
 }
