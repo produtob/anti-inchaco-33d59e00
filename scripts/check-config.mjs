@@ -38,12 +38,15 @@ const REQUIRED_ENDPOINTS = {
 };
 
 const missingSecrets = REQUIRED_SECRETS.filter((k) => !process.env[k]);
-const strict = process.env.CI === "true" || process.env.STRICT_CONFIG_CHECK === "true";
+// Strict only when explicitly opted-in. Vercel sets CI=true automatically,
+// and we don't want the build to fail just because runtime secrets aren't
+// available at build time (they're only needed by serverless functions).
+const strict = process.env.STRICT_CONFIG_CHECK === "true";
 
 if (missingSecrets.length) {
   const msg = `Missing required secrets: ${missingSecrets.join(", ")}`;
   if (strict) errors.push(msg);
-  else console.warn("⚠ " + msg + " (configure in Lovable Cloud → Secrets)");
+  else console.warn("⚠ " + msg + " (configure in your host's env vars; only needed at runtime)");
 }
 
 for (const [name, url] of Object.entries(REQUIRED_ENDPOINTS)) {
